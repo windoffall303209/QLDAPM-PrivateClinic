@@ -60,16 +60,16 @@ export function PrescriptionScreen({ onNavigate }: PrescriptionScreenProps) {
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold mb-1">Kê đơn thuốc</h1>
-        <p className="text-sm text-gray-600">Bệnh nhân: Nguyễn Văn A</p>
+    <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Kê đơn thuốc</h1>
+        <p className="text-xs sm:text-sm text-gray-600">Bệnh nhân: Nguyễn Văn A</p>
       </div>
 
       {/* Form thêm thuốc */}
-      <div className="border rounded p-4 mb-6">
-        <h2 className="font-medium mb-3">Thêm thuốc</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-3">
+      <div className="border rounded p-3 sm:p-4 mb-4 sm:mb-6">
+        <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Thêm thuốc</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-3 mb-3">
           <div>
             <Label className="text-sm">Tên thuốc</Label>
             <Input

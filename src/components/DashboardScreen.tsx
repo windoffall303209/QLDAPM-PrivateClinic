@@ -92,10 +92,10 @@ export function DashboardScreen({ userRole, onNavigate }: DashboardScreenProps) 
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold">{getWelcomeMessage()}</h1>
-        <p className="text-sm text-gray-600">
+    <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">{getWelcomeMessage()}</h1>
+        <p className="text-xs sm:text-sm text-gray-600">
           {new Date().toLocaleDateString('vi-VN', {
             weekday: 'long',
             year: 'numeric',
@@ -106,27 +106,27 @@ export function DashboardScreen({ userRole, onNavigate }: DashboardScreenProps) 
       </div>
 
       {/* Stats */}
-      <div className="mb-6">
-        <h2 className="text-base font-medium mb-3">Thống kê</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Thống kê</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
           {getStats().map((stat, index) => (
-            <div key={index} className="border rounded p-4">
-              <div className="text-2xl font-semibold mb-1">{stat.value}</div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
+            <div key={index} className="border rounded p-3 sm:p-4">
+              <div className="text-lg sm:text-xl lg:text-2xl font-semibold mb-1">{stat.value}</div>
+              <div className="text-xs sm:text-sm text-gray-600">{stat.label}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="mb-6">
-        <h2 className="text-base font-medium mb-3">Tác vụ nhanh</h2>
-        <div className="space-y-2">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Tác vụ nhanh</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {getQuickActions().map((action, index) => (
             <Button
               key={index}
               variant="outline"
-              className="w-full justify-start"
+              className="w-full justify-start text-sm"
               onClick={action.action}
             >
               {action.title}
@@ -137,19 +137,19 @@ export function DashboardScreen({ userRole, onNavigate }: DashboardScreenProps) 
 
       {/* Recent Activities */}
       <div>
-        <h2 className="text-base font-medium mb-3">
+        <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">
           {userRole === 'patient' ? 'Lịch hẹn sắp tới' : 'Hoạt động gần đây'}
         </h2>
-        <div className="border rounded">
-          <table className="w-full">
+        <div className="border rounded overflow-x-auto">
+          <table className="w-full min-w-[500px]">
             <tbody>
               {getRecentActivities().map((activity, index) => (
                 <tr key={index} className={index > 0 ? 'border-t' : ''}>
-                  <td className="px-4 py-3">
-                    <div className="font-medium text-sm">{activity.title}</div>
-                    <div className="text-sm text-gray-600">{activity.detail}</div>
+                  <td className="px-3 sm:px-4 py-2 sm:py-3">
+                    <div className="font-medium text-xs sm:text-sm">{activity.title}</div>
+                    <div className="text-xs sm:text-sm text-gray-600">{activity.detail}</div>
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-3 sm:px-4 py-2 sm:py-3 text-right">
                     <span className={`inline-block px-2 py-1 rounded text-xs ${
                       activity.status === 'Hoàn thành' ? 'bg-green-100 text-green-800' :
                       activity.status === 'Đã đặt' ? 'bg-blue-100 text-blue-800' :

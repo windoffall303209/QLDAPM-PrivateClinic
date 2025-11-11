@@ -57,19 +57,19 @@ export function MedicalHistoryScreen({ onNavigate }: MedicalHistoryScreenProps) 
   );
 
   return (
-    <div className="p-4">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold mb-1">Lịch sử khám bệnh</h1>
-        <p className="text-sm text-gray-600">Xem lại hồ sơ bệnh án</p>
+    <div className="p-3 sm:p-4 lg:p-6">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Lịch sử khám bệnh</h1>
+        <p className="text-xs sm:text-sm text-gray-600">Xem lại hồ sơ bệnh án</p>
       </div>
 
       {/* Search */}
-      <div className="mb-4">
+      <div className="mb-3 sm:mb-4">
         <Input
-          placeholder="Tìm kiếm bác sĩ hoặc chẩn đoán..."
+          placeholder="Tìm bác sĩ/chẩn đoán..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-md"
+          className="w-full sm:max-w-md text-sm"
         />
       </div>
 
@@ -78,11 +78,11 @@ export function MedicalHistoryScreen({ onNavigate }: MedicalHistoryScreenProps) 
         <table className="w-full min-w-[700px]">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-3 py-2 text-left text-sm font-medium">Ngày khám</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Bác sĩ</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Chuyên khoa</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Chẩn đoán</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Thao tác</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Ngày khám</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Bác sĩ</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Chuyên khoa</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Chẩn đoán</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Thao tác</th>
             </tr>
           </thead>
           <tbody>

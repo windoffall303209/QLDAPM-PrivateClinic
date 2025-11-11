@@ -80,29 +80,29 @@ export function DoctorApprovalScreen({ onNavigate }: DoctorApprovalScreenProps) 
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold mb-1">Phê duyệt bác sĩ</h1>
-        <p className="text-sm text-gray-600">Quản lý đơn đăng ký của bác sĩ</p>
+    <div className="p-3 sm:p-4 lg:p-6">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Phê duyệt bác sĩ</h1>
+        <p className="text-xs sm:text-sm text-gray-600">Quản lý đơn đăng ký của bác sĩ</p>
       </div>
 
       {/* Filters */}
-      <div className="mb-4 flex gap-3">
+      <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
         <Input
-          placeholder="Tìm kiếm tên hoặc chuyên khoa..."
+          placeholder="Tìm tên/chuyên khoa..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-xs"
+          className="w-full sm:max-w-xs text-sm"
         />
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 text-sm"
         >
-          <option value="all">Tất cả trạng thái</option>
+          <option value="all">Tất cả</option>
           <option value="pending">Chờ duyệt</option>
           <option value="approved">Đã duyệt</option>
-          <option value="rejected">Đã từ chối</option>
+          <option value="rejected">Từ chối</option>
         </select>
       </div>
 
@@ -111,14 +111,14 @@ export function DoctorApprovalScreen({ onNavigate }: DoctorApprovalScreenProps) 
         <table className="w-full min-w-[900px]">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-medium">STT</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Họ tên</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Chuyên khoa</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Học vị</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Kinh nghiệm</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Ngày nộp</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Trạng thái</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Thao tác</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">STT</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Họ tên</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Chuyên khoa</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Học vị</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">KN</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Ngày nộp</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">TT</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Thao tác</th>
             </tr>
           </thead>
           <tbody>

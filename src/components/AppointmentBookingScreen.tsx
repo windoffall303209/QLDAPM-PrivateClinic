@@ -45,17 +45,17 @@ export function AppointmentBookingScreen({ userRole, onNavigate }: AppointmentBo
   };
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold mb-1">Đặt lịch khám bệnh</h1>
-        <p className="text-sm text-gray-600">Điền thông tin để đặt lịch hẹn</p>
+    <div className="p-3 sm:p-4 lg:p-6 max-w-4xl mx-auto">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Đặt lịch khám bệnh</h1>
+        <p className="text-xs sm:text-sm text-gray-600">Điền thông tin để đặt lịch hẹn</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         {/* Thông tin bệnh nhân */}
-        <div className="border rounded p-4">
-          <h2 className="font-medium mb-3">Thông tin bệnh nhân</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="border rounded p-3 sm:p-4">
+          <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Thông tin bệnh nhân</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <Label>Họ tên <span className="text-red-500">*</span></Label>
               <Input

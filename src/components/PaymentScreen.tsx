@@ -49,16 +49,16 @@ export function PaymentScreen({ onNavigate }: PaymentScreenProps) {
   };
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold mb-1">Thanh toán</h1>
-        <p className="text-sm text-gray-600">Xử lý thanh toán viện phí</p>
+    <div className="p-3 sm:p-4 lg:p-6 max-w-6xl mx-auto">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Thanh toán</h1>
+        <p className="text-xs sm:text-sm text-gray-600">Xử lý thanh toán viện phí</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
         {/* Danh sách hóa đơn */}
         <div>
-          <h2 className="font-medium mb-3">Danh sách hóa đơn</h2>
+          <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Danh sách hóa đơn</h2>
           <div className="border rounded overflow-x-auto">
             <table className="w-full text-sm min-w-[500px]">
               <thead className="bg-gray-50">

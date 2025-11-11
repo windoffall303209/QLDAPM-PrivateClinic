@@ -37,15 +37,15 @@ export function ExaminationScreen({ onNavigate }: ExaminationScreenProps) {
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold mb-1">Khám bệnh</h1>
-        <p className="text-sm text-gray-600">Nhập thông tin khám cho bệnh nhân</p>
+    <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Khám bệnh</h1>
+        <p className="text-xs sm:text-sm text-gray-600">Nhập thông tin khám cho bệnh nhân</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <div className="lg:col-span-1 border rounded p-3">
-          <h2 className="font-medium mb-3 text-sm">Bệnh nhân chờ khám</h2>
+          <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Bệnh nhân chờ khám</h2>
           <div className="space-y-2">
             {waitingPatients.map(patient => (
               <div
@@ -64,9 +64,9 @@ export function ExaminationScreen({ onNavigate }: ExaminationScreenProps) {
 
         <div className="lg:col-span-2">
           {selectedPatient ? (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="border rounded p-4">
-                <h3 className="font-medium mb-3">Thông tin khám</h3>
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+              <div className="border rounded p-3 sm:p-4">
+                <h3 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Thông tin khám</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label className="text-sm">Triệu chứng</Label>
@@ -89,9 +89,9 @@ export function ExaminationScreen({ onNavigate }: ExaminationScreenProps) {
                 </div>
               </div>
 
-              <div className="border rounded p-4">
-                <h3 className="font-medium mb-3">Sinh hiệu</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="border rounded p-3 sm:p-4">
+                <h3 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Sinh hiệu</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                   <div>
                     <Label className="text-sm">Huyết áp</Label>
                     <Input

@@ -116,33 +116,35 @@ export function ReceptionistDashboardScreen({
   });
 
   return (
-    <div className="p-4">
-      <div className="mb-4">
-        <h1 className="text-xl font-semibold mb-1">Danh sách lịch hẹn - {new Date().toLocaleDateString("vi-VN")}</h1>
-        <p className="text-sm text-gray-600">Tổng: {todayAppointments.length} bệnh nhân</p>
+    <div className="p-3 sm:p-4 lg:p-6">
+      <div className="mb-3 sm:mb-4">
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">
+          Danh sách lịch hẹn - {new Date().toLocaleDateString("vi-VN")}
+        </h1>
+        <p className="text-xs sm:text-sm text-gray-600">Tổng: {todayAppointments.length} bệnh nhân</p>
       </div>
 
       {/* Filters */}
-      <div className="mb-4 flex gap-3">
+      <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
         <Input
-          placeholder="Tìm kiếm tên hoặc SĐT..."
+          placeholder="Tìm tên/SĐT..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-xs"
+          className="w-full sm:max-w-xs text-sm"
         />
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 text-sm"
         >
-          <option value="all">Tất cả trạng thái</option>
+          <option value="all">Tất cả</option>
           <option value="waiting">Chờ khám</option>
           <option value="in_progress">Đang khám</option>
           <option value="completed">Hoàn thành</option>
           <option value="cancelled">Đã hủy</option>
         </select>
-        <Button onClick={() => onNavigate("appointment-booking")}>
-          + Đặt lịch mới
+        <Button onClick={() => onNavigate("appointment-booking")} className="text-sm">
+          + Đặt lịch
         </Button>
       </div>
 
@@ -151,32 +153,32 @@ export function ReceptionistDashboardScreen({
         <table className="w-full min-w-[800px]">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-3 py-2 text-left text-sm font-medium">STT</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Tên bệnh nhân</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Ngày sinh</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Giờ</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Phòng</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Bác sĩ</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Trạng thái</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Thao tác</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">STT</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Tên BN</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Ngày sinh</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Giờ</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Phòng</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Bác sĩ</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Trạng thái</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {filteredAppointments.map((appointment, index) => (
               <tr key={appointment.id} className="border-t hover:bg-gray-50">
-                <td className="px-3 py-2 text-sm">{index + 1}</td>
-                <td className="px-3 py-2 text-sm font-medium">
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm">{index + 1}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium">
                   <div>{appointment.patientName}</div>
                   {appointment.notes && (
                     <div className="text-xs text-orange-600">{appointment.notes}</div>
                   )}
                 </td>
-                <td className="px-3 py-2 text-sm whitespace-nowrap">{appointment.dateOfBirth}</td>
-                <td className="px-3 py-2 text-sm whitespace-nowrap">{appointment.appointmentTime}</td>
-                <td className="px-3 py-2 text-sm">{appointment.room}</td>
-                <td className="px-3 py-2 text-sm whitespace-nowrap">{appointment.doctorName}</td>
-                <td className="px-3 py-2 text-sm">
-                  <span className={`inline-block px-2 py-1 rounded text-xs whitespace-nowrap ${
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">{appointment.dateOfBirth}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">{appointment.appointmentTime}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm">{appointment.room}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">{appointment.doctorName}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm">
+                  <span className={`inline-block px-1.5 sm:px-2 py-1 rounded text-xs whitespace-nowrap ${
                     appointment.status === 'waiting' ? 'bg-yellow-100 text-yellow-800' :
                     appointment.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
                     appointment.status === 'completed' ? 'bg-green-100 text-green-800' :
@@ -185,11 +187,11 @@ export function ReceptionistDashboardScreen({
                     {getStatusText(appointment.status)}
                   </span>
                 </td>
-                <td className="px-3 py-2 text-sm">
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm">
                   <div className="flex gap-1 whitespace-nowrap">
-                    <Button size="sm" variant="outline">Chi tiết</Button>
+                    <Button size="sm" variant="outline" className="text-xs px-2">Chi tiết</Button>
                     {appointment.paymentStatus === "pending" && (
-                      <Button size="sm" onClick={() => onNavigate("payment")}>
+                      <Button size="sm" onClick={() => onNavigate("payment")} className="text-xs px-2">
                         TT
                       </Button>
                     )}

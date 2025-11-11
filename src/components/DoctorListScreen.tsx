@@ -86,26 +86,26 @@ export function DoctorListScreen({ userRole, onNavigate }: DoctorListScreenProps
   });
 
   return (
-    <div className="p-4">
-      <div className="mb-4">
-        <h1 className="text-xl font-semibold mb-1">Danh sách bác sĩ</h1>
-        <p className="text-sm text-gray-600">Tổng: {doctors.length} bác sĩ</p>
+    <div className="p-3 sm:p-4 lg:p-6">
+      <div className="mb-3 sm:mb-4">
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Danh sách bác sĩ</h1>
+        <p className="text-xs sm:text-sm text-gray-600">Tổng: {doctors.length} bác sĩ</p>
       </div>
 
       {/* Filters */}
-      <div className="mb-4 flex gap-3">
+      <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
         <Input
-          placeholder="Tìm kiếm tên bác sĩ hoặc chuyên khoa..."
+          placeholder="Tìm tên/chuyên khoa..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-xs"
+          className="w-full sm:max-w-xs text-sm"
         />
         <select
           value={selectedSpecialty}
           onChange={(e) => setSelectedSpecialty(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 text-sm"
         >
-          <option value="all">Tất cả chuyên khoa</option>
+          <option value="all">Tất cả</option>
           {specialties.slice(1).map(specialty => (
             <option key={specialty} value={specialty}>{specialty}</option>
           ))}
@@ -117,31 +117,31 @@ export function DoctorListScreen({ userRole, onNavigate }: DoctorListScreenProps
         <table className="w-full min-w-[900px]">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-3 py-2 text-left text-sm font-medium">STT</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Họ tên</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Chuyên khoa</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Học vị</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">KN</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Lịch làm việc</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Phí khám</th>
-              <th className="px-3 py-2 text-left text-sm font-medium">Thao tác</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">STT</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Họ tên</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Chuyên khoa</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Học vị</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">KN</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Lịch LV</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Phí</th>
+              <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-medium">Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {filteredDoctors.map((doctor, index) => (
               <tr key={doctor.id} className="border-t hover:bg-gray-50">
-                <td className="px-3 py-2 text-sm">{index + 1}</td>
-                <td className="px-3 py-2 text-sm font-medium whitespace-nowrap">BS. {doctor.name}</td>
-                <td className="px-3 py-2 text-sm whitespace-nowrap">{doctor.specialty}</td>
-                <td className="px-3 py-2 text-sm">{doctor.degree}</td>
-                <td className="px-3 py-2 text-sm whitespace-nowrap">{doctor.experience} năm</td>
-                <td className="px-3 py-2 text-sm whitespace-nowrap">{doctor.schedule}</td>
-                <td className="px-3 py-2 text-sm whitespace-nowrap">{doctor.consultationFee.toLocaleString('vi-VN')}đ</td>
-                <td className="px-3 py-2 text-sm">
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm">{index + 1}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap">BS. {doctor.name}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">{doctor.specialty}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm">{doctor.degree}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">{doctor.experience}n</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">{doctor.schedule}</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">{doctor.consultationFee.toLocaleString('vi-VN')}đ</td>
+                <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm">
                   <div className="flex gap-1 whitespace-nowrap">
-                    <Button size="sm" variant="outline">Chi tiết</Button>
+                    <Button size="sm" variant="outline" className="text-xs px-2">Chi tiết</Button>
                     {userRole === 'patient' && (
-                      <Button size="sm" onClick={() => onNavigate('appointment-booking')}>
+                      <Button size="sm" onClick={() => onNavigate('appointment-booking')} className="text-xs px-2">
                         Đặt lịch
                       </Button>
                     )}
@@ -152,7 +152,7 @@ export function DoctorListScreen({ userRole, onNavigate }: DoctorListScreenProps
           </tbody>
         </table>
         {filteredDoctors.length === 0 && (
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-6 sm:p-8 text-center text-sm text-gray-500">
             Không tìm thấy bác sĩ nào
           </div>
         )}
