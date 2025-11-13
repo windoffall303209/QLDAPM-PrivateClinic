@@ -1,175 +1,464 @@
-import React, { useState } from "react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Screen } from "../App";
+import React, { useState } from 'react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
+import { Textarea } from './ui/textarea';
+import { Calendar, Clock, MapPin, Plus, Trash2, AlertCircle } from 'lucide-react';
+import { DoctorSchedule, ShiftType, SHIFTS } from '../types';
 
 interface DoctorScheduleScreenProps {
-  onNavigate: (screen: Screen) => void;
-}
-
-interface ScheduleSlot {
-  id: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  patientName?: string;
-  status: "available" | "booked" | "completed";
-  room?: string;
+  onNavigate?: (screen: string) => void;
 }
 
 export function DoctorScheduleScreen({ onNavigate }: DoctorScheduleScreenProps) {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showLeaveDialog, setShowLeaveDialog] = useState(false);
 
-  const scheduleSlots: ScheduleSlot[] = [
-    {
-      id: "1",
-      date: "2024-09-22",
-      startTime: "08:00",
-      endTime: "09:00",
-      status: "booked",
-      patientName: "Nguyễn Văn A",
-      room: "P101",
-    },
-    {
-      id: "2",
-      date: "2024-09-22",
-      startTime: "09:00",
-      endTime: "10:00",
-      status: "booked",
-      patientName: "Lê Thị B",
-      room: "P101",
-    },
-    {
-      id: "3",
-      date: "2024-09-22",
-      startTime: "10:00",
-      endTime: "11:00",
-      status: "available",
-      room: "P101",
-    },
-    {
-      id: "4",
-      date: "2024-09-22",
-      startTime: "14:00",
-      endTime: "15:00",
-      status: "booked",
-      patientName: "Trần Văn C",
-      room: "P101",
-    },
-    {
-      id: "5",
-      date: "2024-09-22",
-      startTime: "15:00",
-      endTime: "16:00",
-      status: "completed",
-      patientName: "Phạm Thị D",
-      room: "P101",
-    },
-  ];
+  // Form state for adding new schedule
+  const [newSchedule, setNewSchedule] = useState({
+    date: new Date().toISOString().split('T')[0],
+    shift: 'morning' as ShiftType,
+    roomNumber: 'P101',
+  });
 
-  const todaySlots = scheduleSlots.filter(slot => slot.date === selectedDate);
-  const stats = {
-    total: todaySlots.length,
-    booked: todaySlots.filter(s => s.status === 'booked').length,
-    completed: todaySlots.filter(s => s.status === 'completed').length,
-    available: todaySlots.filter(s => s.status === 'available').length,
+  // Form state for leave request
+  const [leaveRequest, setLeaveRequest] = useState({
+    date: new Date().toISOString().split('T')[0],
+    shift: 'morning' as ShiftType,
+    reason: '',
+  });
+
+  // Mock data - Danh sách lịch làm việc
+  const [schedules, setSchedules] = useState<DoctorSchedule[]>([
+    {
+      id: '1',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-13',
+      shift: 'morning',
+      roomNumber: 'P101',
+      maxPatients: 12,
+      currentPatients: 5,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '2',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-13',
+      shift: 'afternoon',
+      roomNumber: 'P101',
+      maxPatients: 12,
+      currentPatients: 8,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '3',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-14',
+      shift: 'morning',
+      roomNumber: 'P102',
+      maxPatients: 12,
+      currentPatients: 12,
+      status: 'full',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '4',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-15',
+      shift: 'evening',
+      roomNumber: 'P103',
+      maxPatients: 10,
+      currentPatients: 3,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+  ]);
+
+  const handleAddSchedule = () => {
+    // Kiểm tra trùng lặp
+    const duplicate = schedules.find(
+      (s) =>
+        s.date === newSchedule.date &&
+        s.shift === newSchedule.shift &&
+        s.doctorId === 'DR001'
+    );
+
+    if (duplicate) {
+      alert('Bạn đã có lịch làm việc vào ca này rồi!');
+      return;
+    }
+
+    const schedule: DoctorSchedule = {
+      id: Date.now().toString(),
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: newSchedule.date,
+      shift: newSchedule.shift,
+      roomNumber: newSchedule.roomNumber,
+      maxPatients: 12,
+      currentPatients: 0,
+      status: 'available',
+      createdAt: new Date().toISOString(),
+    };
+
+    setSchedules([...schedules, schedule]);
+    setShowAddDialog(false);
+    setNewSchedule({
+      date: new Date().toISOString().split('T')[0],
+      shift: 'morning',
+      roomNumber: 'P101',
+    });
   };
 
+  const handleDeleteSchedule = (id: string) => {
+    if (confirm('Bạn có chắc muốn xóa ca làm việc này?')) {
+      setSchedules(schedules.filter((s) => s.id !== id));
+    }
+  };
+
+  const handleLeaveRequest = () => {
+    if (!leaveRequest.reason.trim()) {
+      alert('Vui lòng nhập lý do nghỉ');
+      return;
+    }
+
+    // In real app, send to admin for approval
+    alert(`Đã gửi yêu cầu nghỉ ngày ${new Date(leaveRequest.date).toLocaleDateString('vi-VN')} - Ca ${getShiftLabel(leaveRequest.shift)}\nLý do: ${leaveRequest.reason}`);
+    setShowLeaveDialog(false);
+    setLeaveRequest({
+      date: new Date().toISOString().split('T')[0],
+      shift: 'morning',
+      reason: '',
+    });
+  };
+
+  const getShiftLabel = (shift: ShiftType) => {
+    const shiftData = SHIFTS[shift];
+    return `${shift === 'morning' ? 'Sáng' : shift === 'afternoon' ? 'Chiều' : 'Tối'} (${shiftData.startTime}-${shiftData.endTime})`;
+  };
+
+  const getStatusBadge = (schedule: DoctorSchedule) => {
+    if (schedule.status === 'full') {
+      return <Badge variant="secondary" className="bg-red-100 text-red-800">Đầy</Badge>;
+    }
+    if (schedule.status === 'cancelled') {
+      return <Badge variant="secondary" className="bg-gray-100 text-gray-800">Đã hủy</Badge>;
+    }
+    return <Badge variant="secondary" className="bg-green-100 text-green-800">Còn chỗ</Badge>;
+  };
+
+  // Filter schedules by date
+  const filteredSchedules = schedules.filter((s) => {
+    if (selectedDate) {
+      return s.date === selectedDate;
+    }
+    return true;
+  });
+
   return (
-    <div className="p-3 sm:p-4 lg:p-6 max-w-5xl mx-auto">
-      <div className="mb-4 sm:mb-6">
-        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Lịch làm việc</h1>
-        <p className="text-xs sm:text-sm text-gray-600">Quản lý lịch khám bệnh</p>
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-6xl mx-auto space-y-4">
+        {/* Header */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="h-6 w-6" />
+                  Quản lý lịch làm việc
+                </CardTitle>
+                <CardDescription>
+                  Mỗi ca làm việc kéo dài 4 giờ • Tối đa 12 bệnh nhân/ca
+                </CardDescription>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setShowLeaveDialog(true)}>
+                  Đăng ký nghỉ
+                </Button>
+                <Button onClick={() => setShowAddDialog(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Thêm ca làm việc
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        {/* Date Filter */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <Label htmlFor="date-filter">Lọc theo ngày:</Label>
+              <Input
+                id="date-filter"
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="max-w-xs"
+              />
+              <Button variant="outline" onClick={() => setSelectedDate('')}>
+                Xem tất cả
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Schedule List */}
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {selectedDate
+                ? `Lịch làm việc ngày ${new Date(selectedDate).toLocaleDateString('vi-VN')}`
+                : 'Tất cả lịch làm việc'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {filteredSchedules.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Không có lịch làm việc</p>
+                </div>
+              ) : (
+                filteredSchedules.map((schedule) => (
+                  <Card key={schedule.id} className="border-2">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between gap-4">
+                        {/* Left: Schedule Info */}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="text-2xl font-bold text-primary">
+                              {getShiftLabel(schedule.shift)}
+                            </div>
+                            {getStatusBadge(schedule)}
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-muted-foreground">Ngày:</span>
+                              <span className="font-medium">
+                                {new Date(schedule.date).toLocaleDateString('vi-VN')}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-muted-foreground">Giờ:</span>
+                              <span className="font-medium">
+                                {SHIFTS[schedule.shift].startTime} - {SHIFTS[schedule.shift].endTime}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-muted-foreground">Phòng:</span>
+                              <span className="font-medium">{schedule.roomNumber}</span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <span className="text-muted-foreground">Bệnh nhân:</span>
+                              <span className="font-medium">
+                                {schedule.currentPatients}/{schedule.maxPatients}
+                              </span>
+                              <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                <div
+                                  className={`h-2 rounded-full ${
+                                    schedule.status === 'full' ? 'bg-red-500' : 'bg-green-500'
+                                  }`}
+                                  style={{
+                                    width: `${(schedule.currentPatients / schedule.maxPatients) * 100}%`,
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right: Actions */}
+                        <div className="flex flex-col gap-2">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteSchedule(schedule.id)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Xóa
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Info Card */}
+        <Card className="border-blue-200 bg-blue-50">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="space-y-2 text-sm">
+                <p className="font-medium text-blue-900">Hướng dẫn quản lý lịch làm việc:</p>
+                <ul className="space-y-1 text-blue-800">
+                  <li>• <strong>Mỗi ca:</strong> Kéo dài 4 giờ (Sáng 8h-12h, Chiều 13h-17h, Tối 18h-22h)</li>
+                  <li>• <strong>Số bệnh nhân:</strong> Tối đa 12 bệnh nhân/ca</li>
+                  <li>• <strong>Đăng ký ca:</strong> Chọn ngày, ca, phòng khám → Hệ thống kiểm tra trùng lặp</li>
+                  <li>• <strong>Đăng ký nghỉ:</strong> Gửi yêu cầu đến Admin để phê duyệt</li>
+                  <li>• <strong>Xóa ca:</strong> Chỉ xóa được ca chưa có bệnh nhân đăng ký</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 lg:gap-4 mb-4 sm:mb-6">
-        <div className="border rounded p-2 sm:p-3 text-center">
-          <div className="text-lg sm:text-xl lg:text-2xl font-semibold">{stats.total}</div>
-          <div className="text-xs sm:text-sm text-gray-600">Tổng ca</div>
-        </div>
-        <div className="border rounded p-2 sm:p-3 text-center">
-          <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-blue-600">{stats.booked}</div>
-          <div className="text-xs sm:text-sm text-gray-600">Đã đặt</div>
-        </div>
-        <div className="border rounded p-2 sm:p-3 text-center">
-          <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-green-600">{stats.completed}</div>
-          <div className="text-xs sm:text-sm text-gray-600">Hoàn thành</div>
-        </div>
-        <div className="border rounded p-2 sm:p-3 text-center">
-          <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-600">{stats.available}</div>
-          <div className="text-xs sm:text-sm text-gray-600">Còn trống</div>
-        </div>
-      </div>
+      {/* Add Schedule Dialog */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Thêm ca làm việc mới</DialogTitle>
+            <DialogDescription>
+              Đăng ký ca làm việc cho ngày và giờ cụ thể
+            </DialogDescription>
+          </DialogHeader>
 
-      {/* Date Picker */}
-      <div className="mb-3 sm:mb-4">
-        <label className="block text-xs sm:text-sm font-medium mb-2">Chọn ngày</label>
-        <Input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className="w-full sm:max-w-xs text-sm"
-        />
-      </div>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="new-date">Ngày làm việc</Label>
+              <Input
+                id="new-date"
+                type="date"
+                value={newSchedule.date}
+                onChange={(e) => setNewSchedule({ ...newSchedule, date: e.target.value })}
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
 
-      {/* Schedule Table */}
-      <div className="border rounded overflow-x-auto">
-        <h2 className="text-sm sm:text-base font-medium p-3 sm:p-4 border-b">Lịch ngày {new Date(selectedDate).toLocaleDateString('vi-VN')}</h2>
-        <table className="w-full min-w-[600px]">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Giờ</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Bệnh nhân</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Phòng</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Trạng thái</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {todaySlots.map((slot) => (
-              <tr key={slot.id} className="border-t hover:bg-gray-50">
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {slot.startTime} - {slot.endTime}
-                </td>
-                <td className="px-4 py-3 text-sm">
-                  {slot.patientName || <span className="text-gray-400">Trống</span>}
-                </td>
-                <td className="px-4 py-3 text-sm">{slot.room}</td>
-                <td className="px-4 py-3 text-sm">
-                  <span className={`inline-block px-2 py-1 rounded text-xs ${
-                    slot.status === 'available' ? 'bg-gray-100 text-gray-800' :
-                    slot.status === 'booked' ? 'bg-blue-100 text-blue-800' :
-                    'bg-green-100 text-green-800'
-                  }`}>
-                    {slot.status === 'available' ? 'Trống' :
-                     slot.status === 'booked' ? 'Đã đặt' : 'Hoàn thành'}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-sm">
-                  {slot.status === 'booked' && (
-                    <Button size="sm" onClick={() => onNavigate('examination')}>
-                      Khám
-                    </Button>
-                  )}
-                  {slot.status === 'completed' && (
-                    <Button size="sm" variant="outline">
-                      Xem
-                    </Button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {todaySlots.length === 0 && (
-          <div className="p-8 text-center text-gray-500">
-            Không có lịch làm việc trong ngày này
+            <div>
+              <Label htmlFor="new-shift">Ca làm việc</Label>
+              <Select
+                value={newSchedule.shift}
+                onValueChange={(value) => setNewSchedule({ ...newSchedule, shift: value as ShiftType })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="morning">Sáng (8h-12h)</SelectItem>
+                  <SelectItem value="afternoon">Chiều (13h-17h)</SelectItem>
+                  <SelectItem value="evening">Tối (18h-22h)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="new-room">Phòng khám</Label>
+              <Select
+                value={newSchedule.roomNumber}
+                onValueChange={(value) => setNewSchedule({ ...newSchedule, roomNumber: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="P101">Phòng 101</SelectItem>
+                  <SelectItem value="P102">Phòng 102</SelectItem>
+                  <SelectItem value="P103">Phòng 103</SelectItem>
+                  <SelectItem value="P104">Phòng 104</SelectItem>
+                  <SelectItem value="P105">Phòng 105</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        )}
-      </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+              Hủy
+            </Button>
+            <Button onClick={handleAddSchedule}>
+              Thêm ca làm việc
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Leave Request Dialog */}
+      <Dialog open={showLeaveDialog} onOpenChange={setShowLeaveDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Đăng ký nghỉ</DialogTitle>
+            <DialogDescription>
+              Gửi yêu cầu nghỉ làm đến Admin để phê duyệt
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="leave-date">Ngày nghỉ</Label>
+              <Input
+                id="leave-date"
+                type="date"
+                value={leaveRequest.date}
+                onChange={(e) => setLeaveRequest({ ...leaveRequest, date: e.target.value })}
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="leave-shift">Ca nghỉ</Label>
+              <Select
+                value={leaveRequest.shift}
+                onValueChange={(value) => setLeaveRequest({ ...leaveRequest, shift: value as ShiftType })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="morning">Sáng (8h-12h)</SelectItem>
+                  <SelectItem value="afternoon">Chiều (13h-17h)</SelectItem>
+                  <SelectItem value="evening">Tối (18h-22h)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="leave-reason">Lý do nghỉ *</Label>
+              <Textarea
+                id="leave-reason"
+                placeholder="Nhập lý do nghỉ..."
+                value={leaveRequest.reason}
+                onChange={(e) => setLeaveRequest({ ...leaveRequest, reason: e.target.value })}
+                rows={4}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowLeaveDialog(false)}>
+              Hủy
+            </Button>
+            <Button onClick={handleLeaveRequest}>
+              Gửi yêu cầu
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

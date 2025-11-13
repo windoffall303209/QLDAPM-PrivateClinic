@@ -1,13 +1,15 @@
 import React from 'react';
 import { Button } from './ui/button';
 import { UserRole, Screen } from '../App';
+import { LogOut } from 'lucide-react';
 
 interface DashboardScreenProps {
   userRole: UserRole;
   onNavigate: (screen: Screen) => void;
+  onLogout: () => void;
 }
 
-export function DashboardScreen({ userRole, onNavigate }: DashboardScreenProps) {
+export function DashboardScreen({ userRole, onNavigate, onLogout }: DashboardScreenProps) {
   const getWelcomeMessage = () => {
     switch (userRole) {
       case 'patient': return 'Chào bệnh nhân';
@@ -93,16 +95,22 @@ export function DashboardScreen({ userRole, onNavigate }: DashboardScreenProps) 
 
   return (
     <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto">
-      <div className="mb-4 sm:mb-6">
-        <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">{getWelcomeMessage()}</h1>
-        <p className="text-xs sm:text-sm text-gray-600">
-          {new Date().toLocaleDateString('vi-VN', {
-            weekday: 'long',
+      <div className="mb-4 sm:mb-6 flex items-start justify-between">
+        <div>
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold">{getWelcomeMessage()}</h1>
+          <p className="text-xs sm:text-sm text-gray-600">
+            {new Date().toLocaleDateString('vi-VN', {
+              weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           })}
         </p>
+        </div>
+        <Button variant="outline" onClick={onLogout} className="flex items-center gap-2">
+          <LogOut className="h-4 w-4" />
+          Đăng xuất
+        </Button>
       </div>
 
       {/* Stats */}
