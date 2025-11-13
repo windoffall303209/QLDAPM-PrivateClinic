@@ -217,39 +217,39 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
         </Card>
 
         {/* Statistics */}
-        <div className="grid grid-cols-4 gap-2 sm:gap-4">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4 md:pt-6 md:pb-6">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Tổng số</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Tổng số</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold">{stats.total}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4 md:pt-6 md:pb-6">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Chờ duyệt</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Chờ duyệt</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-yellow-600">{stats.pending}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4 md:pt-6 md:pb-6">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Đã duyệt</p>
-                <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Đã duyệt</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-green-600">{stats.approved}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4 md:pt-6 md:pb-6">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Từ chối</p>
-                <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Từ chối</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-red-600">{stats.rejected}</p>
               </div>
             </CardContent>
           </Card>

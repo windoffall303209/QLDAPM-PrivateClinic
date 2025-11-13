@@ -252,21 +252,21 @@ export function SystemLogScreen({ onBack }: SystemLogScreenProps) {
         </Card>
 
         {/* Statistics */}
-        <div className="grid grid-cols-5 gap-2 sm:gap-4">
+        <div className="grid grid-cols-5 gap-1.5 sm:gap-3">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Tổng số</p>
-                <p className="text-2xl font-bold">{filteredLogs.length}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Tổng số</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold">{filteredLogs.length}</p>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Check-in</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Check-in</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-blue-600">
                   {filteredLogs.filter((l) => l.type === 'check_in').length}
                 </p>
               </div>
@@ -274,10 +274,10 @@ export function SystemLogScreen({ onBack }: SystemLogScreenProps) {
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Cấp số</p>
-                <p className="text-2xl font-bold text-purple-600">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Cấp số</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-purple-600">
                   {filteredLogs.filter((l) => l.type === 'queue_issued').length}
                 </p>
               </div>
@@ -285,10 +285,10 @@ export function SystemLogScreen({ onBack }: SystemLogScreenProps) {
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Gọi khám</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Gọi khám</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-green-600">
                   {filteredLogs.filter((l) => l.type === 'patient_called').length}
                 </p>
               </div>
@@ -296,10 +296,10 @@ export function SystemLogScreen({ onBack }: SystemLogScreenProps) {
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Thanh toán</p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Thanh toán</p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-yellow-600">
                   {filteredLogs.filter((l) => l.type === 'payment').length}
                 </p>
               </div>

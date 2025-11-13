@@ -172,12 +172,12 @@ export function DoctorQueueScreen({
                         : ''
                     }`}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between gap-4">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex items-start justify-between gap-2 sm:gap-4">
                         {/* Left: Queue Info */}
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className="text-3xl font-bold text-primary">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
+                            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
                               {queue.number}
                             </div>
                             {getSourceBadge(queue.source)}
@@ -185,8 +185,8 @@ export function DoctorQueueScreen({
                           </div>
 
                           <div className="space-y-1">
-                            <h3 className="text-lg font-semibold">{queue.patientName}</h3>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <h3 className="text-base sm:text-lg font-semibold">{queue.patientName}</h3>
+                            <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground flex-wrap">
                               <div className="flex items-center gap-1">
                                 <Clock className="h-4 w-4" />
                                 <span>

@@ -426,7 +426,7 @@ export function AppointmentBookingScreen({ onNavigate }: AppointmentBookingScree
               <div className="bg-primary/10 rounded-lg p-4 text-center">
                 <p className="text-sm text-muted-foreground mb-2">Mã đặt chỗ của bạn</p>
                 <div className="flex items-center justify-center gap-2">
-                  <p className="text-2xl font-bold font-mono">{bookingResult.bookingId}</p>
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold font-mono break-all">{bookingResult.bookingId}</p>
                   <Button
                     variant="ghost"
                     size="sm"

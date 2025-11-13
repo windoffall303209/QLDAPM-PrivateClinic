@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { Badge } from './ui/badge';
 import { UserRole, Screen } from '../App';
+import { User, GraduationCap, Calendar, Phone, Stethoscope, DollarSign } from 'lucide-react';
 
 interface DoctorListScreenProps {
   userRole: UserRole;
@@ -22,6 +25,13 @@ interface Doctor {
 export function DoctorListScreen({ userRole, onNavigate }: DoctorListScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('all');
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
+
+  const handleViewDetails = (doctor: Doctor) => {
+    setSelectedDoctor(doctor);
+    setShowDetailDialog(true);
+  };
 
   const doctors: Doctor[] = [
     {
@@ -139,7 +149,7 @@ export function DoctorListScreen({ userRole, onNavigate }: DoctorListScreenProps
                 <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">{doctor.consultationFee.toLocaleString('vi-VN')}đ</td>
                 <td className="px-2 sm:px-3 py-2 text-xs sm:text-sm">
                   <div className="flex gap-1 whitespace-nowrap">
-                    <Button size="sm" variant="outline" className="text-xs px-2">Chi tiết</Button>
+                    <Button size="sm" variant="outline" className="text-xs px-2" onClick={() => handleViewDetails(doctor)}>Chi tiết</Button>
                     {userRole === 'patient' && (
                       <Button size="sm" onClick={() => onNavigate('appointment-booking')} className="text-xs px-2">
                         Đặt lịch
@@ -157,6 +167,125 @@ export function DoctorListScreen({ userRole, onNavigate }: DoctorListScreenProps
           </div>
         )}
       </div>
+
+      {/* Doctor Detail Dialog */}
+      <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <User className="h-6 w-6" />
+              Thông tin chi tiết bác sĩ
+            </DialogTitle>
+            <DialogDescription>
+              Xem đầy đủ thông tin và kinh nghiệm của bác sĩ
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedDoctor && (
+            <div className="space-y-6">
+              {/* Basic Info */}
+              <div className="flex items-start gap-4 p-4 bg-primary/5 rounded-lg">
+                <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <User className="h-10 w-10 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold mb-2">BS. {selectedDoctor.name}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge className="bg-blue-500">{selectedDoctor.specialty}</Badge>
+                    <Badge variant="outline">{selectedDoctor.degree}</Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Detailed Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                  <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Học vị</p>
+                    <p className="font-semibold">{selectedDoctor.degree}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                  <Stethoscope className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Kinh nghiệm</p>
+                    <p className="font-semibold">{selectedDoctor.experience} năm</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                  <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Lịch làm việc</p>
+                    <p className="font-semibold">{selectedDoctor.schedule}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                  <DollarSign className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Phí khám</p>
+                    <p className="font-semibold">{selectedDoctor.consultationFee.toLocaleString('vi-VN')}đ</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 border rounded-lg sm:col-span-2">
+                  <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Số điện thoại</p>
+                    <p className="font-semibold">{selectedDoctor.phone}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* About */}
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <h4 className="font-semibold mb-2">Giới thiệu</h4>
+                <p className="text-sm text-muted-foreground">
+                  Bác sĩ {selectedDoctor.name} là chuyên gia {selectedDoctor.specialty.toLowerCase()}
+                  với {selectedDoctor.experience} năm kinh nghiệm. Tốt nghiệp với học vị {selectedDoctor.degree},
+                  bác sĩ đã điều trị thành công cho hàng nghìn bệnh nhân và luôn được đánh giá cao
+                  về chuyên môn cũng như thái độ chăm sóc tận tâm.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              {userRole === 'patient' && (
+                <div className="flex gap-2">
+                  <Button
+                    className="flex-1"
+                    onClick={() => {
+                      setShowDetailDialog(false);
+                      onNavigate('appointment-booking');
+                    }}
+                  >
+                    Đặt lịch khám
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowDetailDialog(false)}
+                  >
+                    Đóng
+                  </Button>
+                </div>
+              )}
+
+              {userRole !== 'patient' && (
+                <div className="flex justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowDetailDialog(false)}
+                  >
+                    Đóng
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
