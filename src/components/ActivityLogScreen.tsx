@@ -33,17 +33,18 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
   const [filterAction, setFilterAction] = useState<string>('all');
   const [reportPeriod, setReportPeriod] = useState<'day' | 'week' | 'month'>('day');
 
-  // Mock data - Nhật ký hoạt động
+  // Mock data - Nhật ký hoạt động (đồng bộ với dữ liệu check-in và khám bệnh)
   const activityLogs: ActivityLog[] = [
+    // 08:00 - 08:30: Check-in đầu ca sáng
     {
       id: '1',
-      timestamp: '2025-11-13T08:05:30Z',
+      timestamp: '2025-11-14T08:05:30Z',
       action: 'check_in',
       patientName: 'Nguyễn Văn An',
       patientId: 'PT001',
       queueNumber: 'P101-001',
       roomNumber: 'P101',
-      doctorName: 'BS. Trần Thị Mai',
+      doctorName: 'BS. Trần Thị B',
       receptionistName: 'Lễ tân Hoa',
       receptionistId: 'RT001',
     },
@@ -51,11 +52,11 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
       id: '2',
       timestamp: '2025-11-13T08:12:15Z',
       action: 'check_in',
-      patientName: 'Trần Thị Bình',
+      patientName: 'Lê Thị Cẩm',
       patientId: 'PT002',
       queueNumber: 'P101-002',
       roomNumber: 'P101',
-      doctorName: 'BS. Trần Thị Mai',
+      doctorName: 'BS. Trần Thị B',
       receptionistName: 'Lễ tân Hoa',
       receptionistId: 'RT001',
     },
@@ -67,7 +68,7 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
       patientId: 'PT001',
       queueNumber: 'P101-001',
       roomNumber: 'P101',
-      doctorName: 'BS. Trần Thị Mai',
+      doctorName: 'BS. Trần Thị B',
       receptionistName: 'Lễ tân Hoa',
       receptionistId: 'RT001',
     },
@@ -75,37 +76,240 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
       id: '4',
       timestamp: '2025-11-13T08:20:00Z',
       action: 'check_in',
-      patientName: 'Lê Văn Cường',
+      patientName: 'Phạm Minh Đức',
       patientId: 'PT003',
       queueNumber: 'P102-001',
       roomNumber: 'P102',
-      doctorName: 'BS. Nguyễn Văn Đức',
+      doctorName: 'BS. Nguyễn Văn E',
       receptionistName: 'Lễ tân Lan',
       receptionistId: 'RT002',
     },
     {
       id: '5',
+      timestamp: '2025-11-13T08:25:00Z',
+      action: 'check_in',
+      patientName: 'Hoàng Thị Phượng',
+      patientId: 'PT004',
+      queueNumber: 'P103-001',
+      roomNumber: 'P103',
+      doctorName: 'BS. Lê Minh G',
+      receptionistName: 'Lễ tân Hoa',
+      receptionistId: 'RT001',
+    },
+    {
+      id: '6',
+      timestamp: '2025-11-13T08:30:00Z',
+      action: 'check_in',
+      patientName: 'Trần Văn Hùng',
+      patientId: 'PT005',
+      queueNumber: 'P101-003',
+      roomNumber: 'P101',
+      doctorName: 'BS. Trần Thị B',
+      receptionistName: 'Lễ tân Lan',
+      receptionistId: 'RT002',
+    },
+
+    // 08:30 - 09:00: Gọi khám và hoàn thành
+    {
+      id: '7',
+      timestamp: '2025-11-13T08:35:00Z',
+      action: 'call_patient',
+      patientName: 'Lê Thị Cẩm',
+      patientId: 'PT002',
+      queueNumber: 'P101-002',
+      roomNumber: 'P101',
+      doctorName: 'BS. Trần Thị B',
+      receptionistName: 'Lễ tân Hoa',
+      receptionistId: 'RT001',
+    },
+    {
+      id: '8',
+      timestamp: '2025-11-13T08:40:00Z',
+      action: 'call_patient',
+      patientName: 'Phạm Minh Đức',
+      patientId: 'PT003',
+      queueNumber: 'P102-001',
+      roomNumber: 'P102',
+      doctorName: 'BS. Nguyễn Văn E',
+      receptionistName: 'Lễ tân Lan',
+      receptionistId: 'RT002',
+    },
+    {
+      id: '9',
       timestamp: '2025-11-13T08:45:00Z',
       action: 'complete',
       patientName: 'Nguyễn Văn An',
       patientId: 'PT001',
       queueNumber: 'P101-001',
       roomNumber: 'P101',
-      doctorName: 'BS. Trần Thị Mai',
+      doctorName: 'BS. Trần Thị B',
       receptionistName: 'Lễ tân Hoa',
       receptionistId: 'RT001',
     },
     {
-      id: '6',
-      timestamp: '2025-11-13T09:00:00Z',
-      action: 'cancel',
-      patientName: 'Phạm Thị Dung',
+      id: '10',
+      timestamp: '2025-11-13T08:50:00Z',
+      action: 'call_patient',
+      patientName: 'Hoàng Thị Phượng',
       patientId: 'PT004',
-      roomNumber: 'P101',
-      doctorName: 'BS. Trần Thị Mai',
+      queueNumber: 'P103-001',
+      roomNumber: 'P103',
+      doctorName: 'BS. Lê Minh G',
       receptionistName: 'Lễ tân Hoa',
       receptionistId: 'RT001',
-      notes: 'Bệnh nhân hủy lịch hẹn',
+    },
+
+    // 09:00 - 09:30: Tiếp tục check-in và hoàn thành
+    {
+      id: '11',
+      timestamp: '2025-11-13T09:05:00Z',
+      action: 'complete',
+      patientName: 'Lê Thị Cẩm',
+      patientId: 'PT002',
+      queueNumber: 'P101-002',
+      roomNumber: 'P101',
+      doctorName: 'BS. Trần Thị B',
+      receptionistName: 'Lễ tân Hoa',
+      receptionistId: 'RT001',
+    },
+    {
+      id: '12',
+      timestamp: '2025-11-13T09:10:00Z',
+      action: 'call_patient',
+      patientName: 'Trần Văn Hùng',
+      patientId: 'PT005',
+      queueNumber: 'P101-003',
+      roomNumber: 'P101',
+      doctorName: 'BS. Trần Thị B',
+      receptionistName: 'Lễ tân Hoa',
+      receptionistId: 'RT001',
+    },
+    {
+      id: '13',
+      timestamp: '2025-11-13T09:15:00Z',
+      action: 'complete',
+      patientName: 'Phạm Minh Đức',
+      patientId: 'PT003',
+      queueNumber: 'P102-001',
+      roomNumber: 'P102',
+      doctorName: 'BS. Nguyễn Văn E',
+      receptionistName: 'Lễ tân Lan',
+      receptionistId: 'RT002',
+    },
+    {
+      id: '14',
+      timestamp: '2025-11-13T09:20:00Z',
+      action: 'issue_number',
+      patientName: 'Nguyễn Thị Mai',
+      patientId: 'MRN25001',
+      queueNumber: 'P104-001',
+      roomNumber: 'P104',
+      doctorName: 'BS. Phạm Thị H',
+      receptionistName: 'Lễ tân Lan',
+      receptionistId: 'RT002',
+      notes: 'Bệnh nhân mới - Cấp số khám ngay',
+    },
+
+    // 09:30 - 10:00: Hoàn thành và hủy
+    {
+      id: '15',
+      timestamp: '2025-11-13T09:30:00Z',
+      action: 'complete',
+      patientName: 'Hoàng Thị Phượng',
+      patientId: 'PT004',
+      queueNumber: 'P103-001',
+      roomNumber: 'P103',
+      doctorName: 'BS. Lê Minh G',
+      receptionistName: 'Lễ tân Hoa',
+      receptionistId: 'RT001',
+    },
+    {
+      id: '16',
+      timestamp: '2025-11-13T09:35:00Z',
+      action: 'call_patient',
+      patientName: 'Nguyễn Thị Mai',
+      patientId: 'MRN25001',
+      queueNumber: 'P104-001',
+      roomNumber: 'P104',
+      doctorName: 'BS. Phạm Thị H',
+      receptionistName: 'Lễ tân Lan',
+      receptionistId: 'RT002',
+    },
+    {
+      id: '17',
+      timestamp: '2025-11-13T09:40:00Z',
+      action: 'complete',
+      patientName: 'Trần Văn Hùng',
+      patientId: 'PT005',
+      queueNumber: 'P101-003',
+      roomNumber: 'P101',
+      doctorName: 'BS. Trần Thị B',
+      receptionistName: 'Lễ tân Hoa',
+      receptionistId: 'RT001',
+    },
+    {
+      id: '18',
+      timestamp: '2025-11-13T09:45:00Z',
+      action: 'cancel',
+      patientName: 'Võ Văn Tú',
+      patientId: 'PT006',
+      roomNumber: 'P102',
+      doctorName: 'BS. Nguyễn Văn E',
+      receptionistName: 'Lễ tân Hoa',
+      receptionistId: 'RT001',
+      notes: 'Bệnh nhân báo hủy lịch do bận việc đột xuất',
+    },
+
+    // 10:00 - 10:30: Tiếp tục hoạt động
+    {
+      id: '19',
+      timestamp: '2025-11-13T10:00:00Z',
+      action: 'issue_number',
+      patientName: 'Lý Thị Hương',
+      patientId: 'MRN25002',
+      queueNumber: 'P105-001',
+      roomNumber: 'P105',
+      doctorName: 'BS. Hoàng Văn K',
+      receptionistName: 'Lễ tân Lan',
+      receptionistId: 'RT002',
+      notes: 'Bệnh nhân mới - Khám mắt',
+    },
+    {
+      id: '20',
+      timestamp: '2025-11-13T10:10:00Z',
+      action: 'complete',
+      patientName: 'Nguyễn Thị Mai',
+      patientId: 'MRN25001',
+      queueNumber: 'P104-001',
+      roomNumber: 'P104',
+      doctorName: 'BS. Phạm Thị H',
+      receptionistName: 'Lễ tân Lan',
+      receptionistId: 'RT002',
+    },
+    {
+      id: '21',
+      timestamp: '2025-11-13T10:15:00Z',
+      action: 'call_patient',
+      patientName: 'Lý Thị Hương',
+      patientId: 'MRN25002',
+      queueNumber: 'P105-001',
+      roomNumber: 'P105',
+      doctorName: 'BS. Hoàng Văn K',
+      receptionistName: 'Lễ tân Lan',
+      receptionistId: 'RT002',
+    },
+    {
+      id: '22',
+      timestamp: '2025-11-13T10:25:00Z',
+      action: 'issue_number',
+      patientName: 'Đặng Văn Hải',
+      patientId: 'MRN25003',
+      queueNumber: 'P101-004',
+      roomNumber: 'P101',
+      doctorName: 'BS. Trần Thị B',
+      receptionistName: 'Lễ tân Hoa',
+      receptionistId: 'RT001',
+      notes: 'Bệnh nhân mới - Tim mạch',
     },
   ];
 
@@ -164,11 +368,12 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
 
   const getReportSummary = () => {
     const checkIns = filteredLogs.filter(l => l.action === 'check_in').length;
+    const issueNumbers = filteredLogs.filter(l => l.action === 'issue_number').length;
     const calls = filteredLogs.filter(l => l.action === 'call_patient').length;
     const completes = filteredLogs.filter(l => l.action === 'complete').length;
     const cancels = filteredLogs.filter(l => l.action === 'cancel').length;
 
-    return { checkIns, calls, completes, cancels };
+    return { checkIns, issueNumbers, calls, completes, cancels };
   };
 
   const summary = getReportSummary();
@@ -199,20 +404,24 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
         {/* Summary Card - Single Row */}
         <Card>
           <CardContent className="pt-6">
-            <div className="flex justify-around items-center gap-4">
+            <div className="flex justify-around items-center gap-2 md:gap-4">
               <div className="text-center">
                 <p className="text-2xl md:text-3xl font-bold text-blue-600">{summary.checkIns}</p>
                 <p className="text-xs md:text-sm text-muted-foreground mt-1">Check-in</p>
               </div>
-              <div className="text-center border-l pl-4">
+              <div className="text-center border-l pl-2 md:pl-4">
+                <p className="text-2xl md:text-3xl font-bold text-purple-600">{summary.issueNumbers}</p>
+                <p className="text-xs md:text-sm text-muted-foreground mt-1">Cấp số</p>
+              </div>
+              <div className="text-center border-l pl-2 md:pl-4">
                 <p className="text-2xl md:text-3xl font-bold text-green-600">{summary.calls}</p>
                 <p className="text-xs md:text-sm text-muted-foreground mt-1">Gọi khám</p>
               </div>
-              <div className="text-center border-l pl-4">
+              <div className="text-center border-l pl-2 md:pl-4">
                 <p className="text-2xl md:text-3xl font-bold text-gray-600">{summary.completes}</p>
                 <p className="text-xs md:text-sm text-muted-foreground mt-1">Hoàn thành</p>
               </div>
-              <div className="text-center border-l pl-4">
+              <div className="text-center border-l pl-2 md:pl-4">
                 <p className="text-2xl md:text-3xl font-bold text-red-600">{summary.cancels}</p>
                 <p className="text-xs md:text-sm text-muted-foreground mt-1">Hủy</p>
               </div>
@@ -265,8 +474,11 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="Mai">BS. Trần Thị Mai</SelectItem>
-                    <SelectItem value="Đức">BS. Nguyễn Văn Đức</SelectItem>
+                    <SelectItem value="Trần Thị B">BS. Trần Thị B</SelectItem>
+                    <SelectItem value="Nguyễn Văn E">BS. Nguyễn Văn E</SelectItem>
+                    <SelectItem value="Lê Minh G">BS. Lê Minh G</SelectItem>
+                    <SelectItem value="Phạm Thị H">BS. Phạm Thị H</SelectItem>
+                    <SelectItem value="Hoàng Văn K">BS. Hoàng Văn K</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -280,9 +492,11 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="P101">Phòng 101</SelectItem>
-                    <SelectItem value="P102">Phòng 102</SelectItem>
-                    <SelectItem value="P103">Phòng 103</SelectItem>
+                    <SelectItem value="P101">P101 - Nội khoa</SelectItem>
+                    <SelectItem value="P102">P102 - Tim mạch</SelectItem>
+                    <SelectItem value="P103">P103 - Ngoại khoa</SelectItem>
+                    <SelectItem value="P104">P104 - Tai mũi họng</SelectItem>
+                    <SelectItem value="P105">P105 - Mắt</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -297,6 +511,7 @@ export function ActivityLogScreen({ onBack }: ActivityLogScreenProps) {
                   <SelectContent>
                     <SelectItem value="all">Tất cả</SelectItem>
                     <SelectItem value="check_in">Check-in</SelectItem>
+                    <SelectItem value="issue_number">Cấp số</SelectItem>
                     <SelectItem value="call_patient">Gọi khám</SelectItem>
                     <SelectItem value="complete">Hoàn thành</SelectItem>
                     <SelectItem value="cancel">Hủy</SelectItem>
