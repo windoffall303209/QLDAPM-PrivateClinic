@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Textarea } from './ui/textarea';
 import { Alert, AlertDescription } from './ui/alert';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
-import { UserPlus, IdCard, Phone, Calendar as CalendarIcon, User, MapPin, Mail, Briefcase, AlertCircle, CheckCircle2, Camera } from 'lucide-react';
+import { UserPlus, IdCard, Phone, Calendar as CalendarIcon, User, MapPin, Mail, Briefcase, AlertCircle, CheckCircle2, Camera, ClipboardPlus } from 'lucide-react';
 
 interface PatientRegistrationScreenProps {
   onNavigate: (screen: string) => void;
@@ -42,6 +42,14 @@ export function PatientRegistrationScreen({ onNavigate }: PatientRegistrationScr
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [createdMRN, setCreatedMRN] = useState('');
 
+  // States for immediate appointment (walk-in)
+  const [showImmediateAppointmentDialog, setShowImmediateAppointmentDialog] = useState(false);
+  const [immediateRoom, setImmediateRoom] = useState('');
+  const [immediateDoctor, setImmediateDoctor] = useState('');
+  const [immediateReason, setImmediateReason] = useState('');
+  const [showQueueNumberSuccess, setShowQueueNumberSuccess] = useState(false);
+  const [queueNumber, setQueueNumber] = useState('');
+
   const [formData, setFormData] = useState<PatientData>({
     identityNumber: '',
     identityType: 'cccd',
@@ -55,6 +63,24 @@ export function PatientRegistrationScreen({ onNavigate }: PatientRegistrationScr
     emergencyPhone: '',
     occupation: '',
   });
+
+  // Mock data - Danh sách phòng khám
+  const mockRooms = [
+    { id: 'P101', name: 'P101 - Nội khoa' },
+    { id: 'P102', name: 'P102 - Tim mạch' },
+    { id: 'P103', name: 'P103 - Ngoại khoa' },
+    { id: 'P104', name: 'P104 - Tai mũi họng' },
+    { id: 'P105', name: 'P105 - Mắt' },
+  ];
+
+  // Mock data - Danh sách bác sĩ
+  const mockDoctors = [
+    { id: 'DR001', name: 'BS. Trần Thị B', specialty: 'Tim mạch' },
+    { id: 'DR002', name: 'BS. Nguyễn Văn E', specialty: 'Nội khoa' },
+    { id: 'DR003', name: 'BS. Lê Minh G', specialty: 'Ngoại khoa' },
+    { id: 'DR004', name: 'BS. Phạm Thị H', specialty: 'Tai mũi họng' },
+    { id: 'DR005', name: 'BS. Hoàng Văn K', specialty: 'Mắt' },
+  ];
 
   const handleSearch = () => {
     if (!searchIdentity.trim()) {
@@ -127,8 +153,46 @@ export function PatientRegistrationScreen({ onNavigate }: PatientRegistrationScr
 
   const handleCreateAppointment = () => {
     setShowSuccessDialog(false);
-    // Navigate to appointment booking with pre-filled patient info
-    onNavigate('appointment-booking');
+    // Open immediate appointment dialog instead of navigating to appointment booking
+    setShowImmediateAppointmentDialog(true);
+  };
+
+  const handleImmediateAppointment = () => {
+    if (!immediateRoom || !immediateDoctor || !immediateReason.trim()) {
+      alert('Vui lòng điền đầy đủ thông tin khám bệnh');
+      return;
+    }
+
+    // Sinh số thứ tự theo định dạng phòng: P101-001
+    const sequenceNumber = String(Math.floor(Math.random() * 100) + 1).padStart(3, '0');
+    const generatedQueueNumber = `${immediateRoom}-${sequenceNumber}`;
+
+    // Lưu số khám bệnh
+    setQueueNumber(generatedQueueNumber);
+
+    // Đóng dialog nhập liệu và hiển thị dialog thành công
+    setShowImmediateAppointmentDialog(false);
+    setShowQueueNumberSuccess(true);
+
+    // Reset form
+    setImmediateRoom('');
+    setImmediateDoctor('');
+    setImmediateReason('');
+  };
+
+  const handleCloseQueueNumberSuccess = () => {
+    setShowQueueNumberSuccess(false);
+    setQueueNumber('');
+    // Reset về màn hình tìm kiếm
+    setStep('search');
+    setFormData({
+      identityNumber: '',
+      identityType: 'cccd',
+      phone: '',
+      fullName: '',
+      dateOfBirth: '',
+      gender: 'male',
+    });
   };
 
   return (
@@ -464,6 +528,133 @@ export function PatientRegistrationScreen({ onNavigate }: PatientRegistrationScr
               Tạo lịch khám ngay
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog: Tạo lịch khám ngay */}
+      <Dialog open={showImmediateAppointmentDialog} onOpenChange={setShowImmediateAppointmentDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ClipboardPlus className="h-5 w-5" />
+              Tạo lịch khám ngay
+            </DialogTitle>
+            <DialogDescription>
+              Nhập thông tin khám bệnh để cấp số khám ngay
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {/* Phòng khám */}
+            <div className="space-y-2">
+              <Label htmlFor="immediate-room">Phòng khám <span className="text-red-500">*</span></Label>
+              <Select value={immediateRoom} onValueChange={setImmediateRoom}>
+                <SelectTrigger id="immediate-room">
+                  <SelectValue placeholder="Chọn phòng khám" />
+                </SelectTrigger>
+                <SelectContent>
+                  {mockRooms.map((room) => (
+                    <SelectItem key={room.id} value={room.id}>
+                      {room.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Bác sĩ khám */}
+            <div className="space-y-2">
+              <Label htmlFor="immediate-doctor">Bác sĩ khám <span className="text-red-500">*</span></Label>
+              <Select value={immediateDoctor} onValueChange={setImmediateDoctor}>
+                <SelectTrigger id="immediate-doctor">
+                  <SelectValue placeholder="Chọn bác sĩ" />
+                </SelectTrigger>
+                <SelectContent>
+                  {mockDoctors.map((doctor) => (
+                    <SelectItem key={doctor.id} value={doctor.id}>
+                      {doctor.name} - {doctor.specialty}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Lý do khám */}
+            <div className="space-y-2">
+              <Label htmlFor="immediate-reason">Lý do khám <span className="text-red-500">*</span></Label>
+              <Input
+                id="immediate-reason"
+                placeholder="Nhập lý do khám bệnh..."
+                value={immediateReason}
+                onChange={(e) => setImmediateReason(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowImmediateAppointmentDialog(false)}
+            >
+              Hủy
+            </Button>
+            <Button
+              onClick={handleImmediateAppointment}
+              className="!bg-green-600 hover:!bg-green-700 !text-white"
+              style={{ backgroundColor: '#16a34a', color: 'white' }}
+            >
+              <CheckCircle2 className="h-4 w-4 mr-2" />
+              Cấp số khám
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog: Cấp số khám thành công */}
+      <Dialog open={showQueueNumberSuccess} onOpenChange={handleCloseQueueNumberSuccess}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              <div className="flex justify-center mb-2">
+                <div className="rounded-full bg-green-100 p-3">
+                  <CheckCircle2 className="h-8 w-8 text-green-600" />
+                </div>
+              </div>
+              Cấp số thành công
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+              <p className="text-center text-sm text-green-800 font-medium mb-2">
+                Số thứ tự khám bệnh
+              </p>
+              <p className="text-center text-4xl font-bold text-green-600">
+                {queueNumber}
+              </p>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm font-medium text-blue-900 mb-2">Thông tin bệnh nhân:</p>
+              <div className="space-y-1 text-sm text-blue-800">
+                <p><strong>Họ tên:</strong> {formData.fullName}</p>
+                <p><strong>MRN:</strong> {createdMRN}</p>
+                <p><strong>SĐT:</strong> {formData.phone}</p>
+              </div>
+            </div>
+
+            <div className="text-center text-sm text-muted-foreground space-y-1">
+              <p>Vui lòng đưa số này cho bệnh nhân</p>
+              <p>và hướng dẫn chờ tại khu vực chờ</p>
+            </div>
+          </div>
+
+          <Button
+            onClick={handleCloseQueueNumberSuccess}
+            className="w-full"
+          >
+            Đóng
+          </Button>
         </DialogContent>
       </Dialog>
     </div>

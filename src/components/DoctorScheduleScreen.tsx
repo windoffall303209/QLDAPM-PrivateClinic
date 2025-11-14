@@ -20,6 +20,12 @@ export function DoctorScheduleScreen({ onNavigate }: DoctorScheduleScreenProps) 
   );
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState({
+    title: '',
+    description: '',
+    type: 'success' as 'success' | 'error' | 'info'
+  });
 
   // Form state for adding new schedule
   const [newSchedule, setNewSchedule] = useState({
@@ -77,6 +83,30 @@ export function DoctorScheduleScreen({ onNavigate }: DoctorScheduleScreenProps) 
       id: '4',
       doctorId: 'DR001',
       doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-14',
+      shift: 'afternoon',
+      roomNumber: 'P102',
+      maxPatients: 12,
+      currentPatients: 7,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '5',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-15',
+      shift: 'morning',
+      roomNumber: 'P103',
+      maxPatients: 12,
+      currentPatients: 3,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '6',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
       date: '2025-11-15',
       shift: 'evening',
       roomNumber: 'P103',
@@ -85,11 +115,88 @@ export function DoctorScheduleScreen({ onNavigate }: DoctorScheduleScreenProps) 
       status: 'available',
       createdAt: '2025-11-01T10:00:00Z',
     },
+    {
+      id: '7',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-16',
+      shift: 'morning',
+      roomNumber: 'P101',
+      maxPatients: 12,
+      currentPatients: 0,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '8',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-16',
+      shift: 'afternoon',
+      roomNumber: 'P101',
+      maxPatients: 12,
+      currentPatients: 4,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '9',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-17',
+      shift: 'morning',
+      roomNumber: 'P102',
+      maxPatients: 12,
+      currentPatients: 6,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '10',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-17',
+      shift: 'afternoon',
+      roomNumber: 'P102',
+      maxPatients: 12,
+      currentPatients: 9,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '11',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-18',
+      shift: 'morning',
+      roomNumber: 'P103',
+      maxPatients: 12,
+      currentPatients: 2,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
+    {
+      id: '12',
+      doctorId: 'DR001',
+      doctorName: 'BS. Nguyễn Văn An',
+      date: '2025-11-18',
+      shift: 'evening',
+      roomNumber: 'P103',
+      maxPatients: 10,
+      currentPatients: 5,
+      status: 'available',
+      createdAt: '2025-11-01T10:00:00Z',
+    },
   ]);
 
   const handleAddSchedule = () => {
     // Hiển thị thông báo phê duyệt
-    alert('Yêu cầu thêm lịch làm việc đã được gửi!\n\nBạn cần đợi sự phê duyệt từ Giám đốc phòng khám.\n\nYêu cầu của bạn sẽ được xem xét và thông báo qua email.');
+    setNotificationMessage({
+      title: 'Yêu cầu đã được gửi!',
+      description: 'Yêu cầu thêm lịch làm việc đã được gửi đến Giám đốc phòng khám. Bạn sẽ nhận được thông báo qua email khi yêu cầu được xét duyệt.',
+      type: 'success'
+    });
+    setShowNotification(true);
 
     // Trong thực tế, yêu cầu sẽ được gửi đến Manager để phê duyệt
     // và chỉ được thêm vào lịch sau khi được phê duyệt
@@ -103,23 +210,37 @@ export function DoctorScheduleScreen({ onNavigate }: DoctorScheduleScreenProps) 
   };
 
   const handleDeleteSchedule = (id: string) => {
-    if (confirm('Bạn có chắc muốn gửi yêu cầu xóa ca làm việc này?')) {
-      // Hiển thị thông báo phê duyệt
-      alert('Yêu cầu xóa lịch làm việc đã được gửi!\n\nBạn cần đợi sự phê duyệt từ Giám đốc phòng khám.\n\nYêu cầu của bạn sẽ được xem xét và thông báo qua email.');
+    // Hiển thị thông báo phê duyệt
+    setNotificationMessage({
+      title: 'Yêu cầu xóa ca làm việc',
+      description: 'Yêu cầu xóa ca làm việc đã được gửi đến Giám đốc phòng khám. Bạn cần đợi sự phê duyệt trước khi ca làm việc được xóa khỏi hệ thống.',
+      type: 'info'
+    });
+    setShowNotification(true);
 
-      // Trong thực tế, yêu cầu xóa sẽ được gửi đến Manager để phê duyệt
-      // và chỉ được xóa sau khi được phê duyệt
-    }
+    // Trong thực tế, yêu cầu xóa sẽ được gửi đến Manager để phê duyệt
+    // và chỉ được xóa sau khi được phê duyệt
   };
 
   const handleLeaveRequest = () => {
     if (!leaveRequest.reason.trim()) {
-      alert('Vui lòng nhập lý do nghỉ');
+      setNotificationMessage({
+        title: 'Thiếu thông tin',
+        description: 'Vui lòng nhập lý do nghỉ trước khi gửi yêu cầu.',
+        type: 'error'
+      });
+      setShowNotification(true);
       return;
     }
 
     // In real app, send to admin for approval
-    alert(`Đã gửi yêu cầu nghỉ ngày ${new Date(leaveRequest.date).toLocaleDateString('vi-VN')} - Ca ${getShiftLabel(leaveRequest.shift)}\nLý do: ${leaveRequest.reason}`);
+    setNotificationMessage({
+      title: 'Đã gửi yêu cầu nghỉ phép',
+      description: `Yêu cầu nghỉ ngày ${new Date(leaveRequest.date).toLocaleDateString('vi-VN')} - Ca ${getShiftLabel(leaveRequest.shift)} đã được gửi. Lý do: ${leaveRequest.reason}`,
+      type: 'success'
+    });
+    setShowNotification(true);
+
     setShowLeaveDialog(false);
     setLeaveRequest({
       date: new Date().toISOString().split('T')[0],
@@ -440,6 +561,58 @@ export function DoctorScheduleScreen({ onNavigate }: DoctorScheduleScreenProps) 
               Gửi yêu cầu
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Notification Dialog */}
+      <Dialog open={showNotification} onOpenChange={setShowNotification}>
+        <DialogContent className="max-w-[280px]">
+          <div className="flex items-start gap-3">
+            {notificationMessage.type === 'success' && (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 flex-shrink-0">
+                <svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            )}
+            {notificationMessage.type === 'error' && (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 flex-shrink-0">
+                <svg className="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+            )}
+            {notificationMessage.type === 'info' && (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 flex-shrink-0">
+                <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            )}
+            <div className="flex-1 space-y-2">
+              <h3 className={`text-sm font-semibold ${
+                notificationMessage.type === 'success' ? 'text-green-900' :
+                notificationMessage.type === 'error' ? 'text-red-900' :
+                'text-blue-900'
+              }`}>
+                {notificationMessage.title}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {notificationMessage.description}
+              </p>
+              <Button
+                size="sm"
+                onClick={() => setShowNotification(false)}
+                className={`w-full mt-3 ${
+                  notificationMessage.type === 'success' ? 'bg-green-600 hover:bg-green-700' :
+                  notificationMessage.type === 'error' ? 'bg-red-600 hover:bg-red-700' :
+                  'bg-blue-600 hover:bg-blue-700'
+                }`}
+              >
+                Đã hiểu
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

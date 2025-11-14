@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { UserRole, Screen } from '../App';
-import { LogOut } from 'lucide-react';
+import { LogOut, Eye, Download, Printer } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
+import { Separator } from './ui/separator';
 
 interface DashboardScreenProps {
   userRole: UserRole;
@@ -10,6 +12,9 @@ interface DashboardScreenProps {
 }
 
 export function DashboardScreen({ userRole, onNavigate, onLogout }: DashboardScreenProps) {
+  const [showPatientInfoDialog, setShowPatientInfoDialog] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<any>(null);
+
   const getWelcomeMessage = () => {
     switch (userRole) {
       case 'patient': return 'Chào bệnh nhân';
@@ -226,8 +231,18 @@ export function DashboardScreen({ userRole, onNavigate, onLogout }: DashboardScr
     ];
   };
 
-  const handlePrintPatientInfo = (patientName: string) => {
-    alert(`Đang xuất phiếu thông tin khám cho bệnh nhân: ${patientName}\n\nChức năng in phiếu sẽ được triển khai với thư viện jsPDF`);
+  const handleViewPatientInfo = (patient: any) => {
+    setSelectedPatient(patient);
+    setShowPatientInfoDialog(true);
+  };
+
+  const handlePrintPatientInfo = () => {
+    alert(`Đang in phiếu thông tin khám cho bệnh nhân: ${selectedPatient?.patientName}\n\nChức năng in phiếu sẽ được triển khai với window.print()`);
+    // window.print();
+  };
+
+  const handleExportPatientInfo = () => {
+    alert(`Đang xuất phiếu thông tin khám cho bệnh nhân: ${selectedPatient?.patientName}\n\nChức năng xuất file sẽ được triển khai với thư viện jsPDF`);
   };
 
   return (
@@ -311,14 +326,29 @@ export function DashboardScreen({ userRole, onNavigate, onLogout }: DashboardScr
                     <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">{patient.room}</td>
                     <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">{patient.doctorName}</td>
                     <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handlePrintPatientInfo(patient.patientName)}
-                        className="text-xs"
-                      >
-                        Xuất phiếu
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleViewPatientInfo(patient)}
+                          className="text-xs"
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Xem
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedPatient(patient);
+                            handleExportPatientInfo();
+                          }}
+                          className="text-xs"
+                        >
+                          <Download className="h-3 w-3 mr-1" />
+                          Xuất
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -352,6 +382,137 @@ export function DashboardScreen({ userRole, onNavigate, onLogout }: DashboardScr
           )}
         </div>
       </div>
+
+      {/* Patient Info Dialog */}
+      <Dialog open={showPatientInfoDialog} onOpenChange={setShowPatientInfoDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Phiếu thông tin khám bệnh</DialogTitle>
+            <DialogDescription>
+              Thông tin chi tiết bệnh nhân chờ khám
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedPatient && (
+            <div className="border rounded-lg p-6 space-y-4 bg-white">
+              {/* Header */}
+              <div className="text-center border-b pb-4">
+                <h2 className="text-xl font-bold">PHÒNG KHÁM ĐA KHOA ABC</h2>
+                <p className="text-sm text-muted-foreground">123 Đường ABC, Quận 1, TP.HCM</p>
+                <p className="text-sm text-muted-foreground">ĐT: 028 1234 5678 - Email: info@phongkhamabc.vn</p>
+              </div>
+
+              {/* Title */}
+              <div className="text-center py-2">
+                <h3 className="text-lg font-bold uppercase">Phiếu thông tin khám bệnh</h3>
+                <p className="text-sm text-muted-foreground">Ngày: {new Date().toLocaleDateString('vi-VN')}</p>
+              </div>
+
+              <Separator />
+
+              {/* Patient Info */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-base">I. THÔNG TIN BỆNH NHÂN</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Họ và tên:</span>
+                    <p className="font-medium text-base">{selectedPatient.patientName}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Năm sinh:</span>
+                    <p className="font-medium text-base">{selectedPatient.dateOfBirth}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Giới tính:</span>
+                    <p className="font-medium">Nam/Nữ</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Số điện thoại:</span>
+                    <p className="font-medium">090 123 4567</p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground">Địa chỉ:</span>
+                    <p className="font-medium">123 Đường XYZ, Quận 1, TP.HCM</p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Appointment Info */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-base">II. THÔNG TIN LỊCH KHÁM</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Giờ hẹn:</span>
+                    <p className="font-medium text-base">{selectedPatient.appointmentTime}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Ngày khám:</span>
+                    <p className="font-medium text-base">{new Date().toLocaleDateString('vi-VN')}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Phòng khám:</span>
+                    <p className="font-medium text-base">{selectedPatient.room}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Bác sĩ phụ trách:</span>
+                    <p className="font-medium text-base">{selectedPatient.doctorName}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground">Số thứ tự:</span>
+                    <p className="font-medium text-lg text-primary">{selectedPatient.room}-{String(Math.floor(Math.random() * 100) + 1).padStart(3, '0')}</p>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Additional Info */}
+              <div className="space-y-2">
+                <h4 className="font-semibold text-base">III. LƯU Ý</h4>
+                <ul className="text-sm space-y-1 text-muted-foreground">
+                  <li>• Vui lòng mang theo giấy tờ tùy thân và các xét nghiệm cũ (nếu có)</li>
+                  <li>• Đến trước giờ hẹn 15 phút để làm thủ tục</li>
+                  <li>• Thông báo cho lễ tân nếu có thay đổi lịch hẹn</li>
+                  <li>• Liên hệ hotline: 1900 1234 nếu cần hỗ trợ</li>
+                </ul>
+              </div>
+
+              {/* Footer */}
+              <div className="grid grid-cols-2 gap-8 pt-4 text-sm text-center">
+                <div>
+                  <p className="text-muted-foreground mb-8">Bệnh nhân</p>
+                  <p className="font-medium">(Ký và ghi rõ họ tên)</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground mb-8">Lễ tân</p>
+                  <p className="font-medium">(Ký và ghi rõ họ tên)</p>
+                </div>
+              </div>
+
+              <div className="text-center text-xs text-muted-foreground border-t pt-3 mt-4">
+                <p>Phiếu được in lúc: {new Date().toLocaleString('vi-VN')}</p>
+                <p className="mt-1">Cảm ơn quý khách đã tin tưởng và sử dụng dịch vụ!</p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPatientInfoDialog(false)}>
+              Đóng
+            </Button>
+            <Button variant="outline" onClick={handlePrintPatientInfo}>
+              <Printer className="h-4 w-4 mr-2" />
+              In phiếu
+            </Button>
+            <Button onClick={handleExportPatientInfo}>
+              <Download className="h-4 w-4 mr-2" />
+              Xuất file PDF
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

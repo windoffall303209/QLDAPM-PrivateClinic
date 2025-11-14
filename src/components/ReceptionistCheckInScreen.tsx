@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Separator } from './ui/separator';
-import { Search, UserPlus, CheckCircle, Clock, Calendar, User, Phone, Hash } from 'lucide-react';
-import { Appointment } from '../types';
+import React, { useState } from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Separator } from "./ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import {
+  Search,
+  UserPlus,
+  CheckCircle,
+  Clock,
+  Calendar,
+  User,
+  Phone,
+  Hash,
+} from "lucide-react";
+import { Appointment } from "../types";
 
 interface ReceptionistCheckInScreenProps {
   onNavigateToCreateProfile: () => void;
@@ -15,49 +37,115 @@ interface ReceptionistCheckInScreenProps {
 
 export function ReceptionistCheckInScreen({
   onNavigateToCreateProfile,
-  onCheckInComplete
+  onCheckInComplete,
 }: ReceptionistCheckInScreenProps) {
-  const [searchType, setSearchType] = useState<'phone' | 'booking_id'>('phone');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState<"phone" | "booking_id">("phone");
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<Appointment | null>(null);
   const [showResult, setShowResult] = useState(false);
+
+  // States for check-in success dialog
+  const [showCheckInSuccess, setShowCheckInSuccess] = useState(false);
+  const [checkInQueueNumber, setCheckInQueueNumber] = useState("");
 
   // Mock data - Danh sách lịch hẹn
   const mockAppointments: Appointment[] = [
     {
-      id: '1',
-      bookingId: 'BK2024111301',
-      patientId: 'PT001',
-      patientName: 'Nguyễn Văn An',
-      patientPhone: '0901234567',
-      patientDateOfBirth: '1990-05-15',
-      appointmentDate: '2025-11-13',
-      shift: 'morning',
-      doctorId: 'DR001',
-      doctorName: 'BS. Trần Thị Mai',
-      specialty: 'Tim mạch',
-      roomNumber: 'P101',
-      reason: 'Khám định kỳ tim mạch',
-      notes: 'Dị ứng Penicillin',
-      status: 'pending',
-      source: 'online',
-      createdAt: '2025-11-12T10:00:00Z',
-      updatedAt: '2025-11-12T10:00:00Z',
+      id: "1",
+      bookingId: "BK2024111301",
+      patientId: "PT001",
+      patientName: "Nguyễn Văn An",
+      patientPhone: "0901234567",
+      patientDateOfBirth: "1978-05-15",
+      appointmentDate: "2025-11-13",
+      shift: "morning",
+      doctorId: "DR001",
+      doctorName: "BS. Trần Thị B",
+      specialty: "Tim mạch",
+      roomNumber: "P101",
+      reason: "Khám tổng quát tim mạch",
+      notes: "Dị ứng Penicillin",
+      status: "pending",
+      source: "online",
+      createdAt: "2025-11-12T10:00:00Z",
+      updatedAt: "2025-11-12T10:00:00Z",
     },
     {
-      id: '2',
-      bookingId: 'BK2024111302',
-      patientId: 'PT002',
-      patientName: 'Lê Thị Bình',
-      patientPhone: '0912345678',
-      patientDateOfBirth: '1985-08-20',
-      appointmentDate: '2025-11-13',
-      shift: 'afternoon',
-      reason: 'Khám tổng quát',
-      status: 'pending',
-      source: 'online',
-      createdAt: '2025-11-12T14:30:00Z',
-      updatedAt: '2025-11-12T14:30:00Z',
+      id: "2",
+      bookingId: "BK2024111302",
+      patientId: "PT002",
+      patientName: "Lê Thị Cẩm",
+      patientPhone: "0912345678",
+      patientDateOfBirth: "1990-08-20",
+      appointmentDate: "2025-11-13",
+      shift: "morning",
+      doctorId: "DR001",
+      doctorName: "BS. Trần Thị B",
+      specialty: "Nội khoa",
+      roomNumber: "P101",
+      reason: "Khám tổng quát",
+      status: "pending",
+      source: "online",
+      createdAt: "2025-11-12T14:30:00Z",
+      updatedAt: "2025-11-12T14:30:00Z",
+    },
+    {
+      id: "3",
+      bookingId: "BK2024111303",
+      patientId: "PT003",
+      patientName: "Phạm Minh Đức",
+      patientPhone: "0923456789",
+      patientDateOfBirth: "1995-03-10",
+      appointmentDate: "2025-11-13",
+      shift: "morning",
+      doctorId: "DR002",
+      doctorName: "BS. Nguyễn Văn E",
+      specialty: "Nội khoa",
+      roomNumber: "P102",
+      reason: "Khám sức khỏe định kỳ",
+      status: "pending",
+      source: "online",
+      createdAt: "2025-11-12T15:00:00Z",
+      updatedAt: "2025-11-12T15:00:00Z",
+    },
+    {
+      id: "4",
+      bookingId: "BK2024111304",
+      patientId: "PT004",
+      patientName: "Hoàng Thị Phượng",
+      patientPhone: "0934567890",
+      patientDateOfBirth: "1968-12-25",
+      appointmentDate: "2025-11-13",
+      shift: "morning",
+      doctorId: "DR003",
+      doctorName: "BS. Lê Minh G",
+      specialty: "Ngoại khoa",
+      roomNumber: "P103",
+      reason: "Tái khám sau phẫu thuật",
+      status: "pending",
+      source: "online",
+      createdAt: "2025-11-12T16:00:00Z",
+      updatedAt: "2025-11-12T16:00:00Z",
+    },
+    {
+      id: "5",
+      bookingId: "BK2024111305",
+      patientId: "PT005",
+      patientName: "Trần Văn Hùng",
+      patientPhone: "0945678901",
+      patientDateOfBirth: "1956-07-08",
+      appointmentDate: "2025-11-13",
+      shift: "morning",
+      doctorId: "DR001",
+      doctorName: "BS. Trần Thị B",
+      specialty: "Tim mạch",
+      roomNumber: "P101",
+      reason: "Kiểm tra huyết áp",
+      notes: "Tiền sử cao huyết áp",
+      status: "pending",
+      source: "online",
+      createdAt: "2025-11-12T17:00:00Z",
+      updatedAt: "2025-11-12T17:00:00Z",
     },
   ];
 
@@ -68,7 +156,7 @@ export function ReceptionistCheckInScreen({
 
     // Tìm kiếm trong mock data
     const result = mockAppointments.find((apt) => {
-      if (searchType === 'phone') {
+      if (searchType === "phone") {
         return apt.patientPhone.includes(searchQuery);
       } else {
         return apt.bookingId.toLowerCase() === searchQuery.toLowerCase();
@@ -83,41 +171,68 @@ export function ReceptionistCheckInScreen({
     if (!searchResult) return;
 
     // Sinh số thứ tự theo định dạng P101-001
-    let queueNumber = '';
+    let queueNumber = "";
 
     if (searchResult.roomNumber) {
       // Cấp số theo phòng: P101-001, P102-001, etc.
       const roomNumber = searchResult.roomNumber; // P101, P102...
-      const sequenceNumber = String(Math.floor(Math.random() * 100) + 1).padStart(3, '0');
+      const sequenceNumber = String(
+        Math.floor(Math.random() * 100) + 1
+      ).padStart(3, "0");
       queueNumber = `${roomNumber}-${sequenceNumber}`;
     } else {
       // Cấp số chung (chưa biết phòng): G-001
-      queueNumber = `G-${String(Math.floor(Math.random() * 100) + 1).padStart(3, '0')}`;
+      queueNumber = `G-${String(Math.floor(Math.random() * 100) + 1).padStart(
+        3,
+        "0"
+      )}`;
     }
+
+    // Lưu số khám bệnh và hiển thị dialog thành công
+    setCheckInQueueNumber(queueNumber);
+    setShowCheckInSuccess(true);
 
     // Cập nhật trạng thái
     const updatedAppointment: Appointment = {
       ...searchResult,
-      status: 'checked_in',
+      status: "checked_in",
       queueNumber: queueNumber,
-      queueNumberType: searchResult.roomNumber ? 'room' : 'general',
+      queueNumberType: searchResult.roomNumber ? "room" : "general",
       checkedInAt: new Date().toISOString(),
     };
 
     onCheckInComplete(updatedAppointment, queueNumber);
   };
 
+  const handleCloseCheckInSuccess = () => {
+    const savedQueueNumber = checkInQueueNumber;
+    setShowCheckInSuccess(false);
+    setCheckInQueueNumber("");
+    // Reset search result để cập nhật UI
+    if (searchResult) {
+      setSearchResult({
+        ...searchResult,
+        status: "checked_in",
+        queueNumber: savedQueueNumber,
+      });
+    }
+  };
+
   const getShiftLabel = (shift: string) => {
     switch (shift) {
-      case 'morning': return 'Sáng (8h-12h)';
-      case 'afternoon': return 'Chiều (13h-17h)';
-      case 'evening': return 'Tối (18h-22h)';
-      default: return shift;
+      case "morning":
+        return "Sáng (8h-12h)";
+      case "afternoon":
+        return "Chiều (13h-17h)";
+      case "evening":
+        return "Tối (18h-22h)";
+      default:
+        return shift;
     }
   };
 
   const getSourceBadge = (source: string) => {
-    if (source === 'online') {
+    if (source === "online") {
       return <Badge className="bg-blue-500">Hẹn trước</Badge>;
     }
     return <Badge variant="secondary">Vãng lai</Badge>;
@@ -133,9 +248,7 @@ export function ReceptionistCheckInScreen({
               <CheckCircle className="h-6 w-6" />
               Check-in bệnh nhân
             </CardTitle>
-            <CardDescription>
-              Tra cứu và check-in bệnh nhân
-            </CardDescription>
+            <CardDescription>Tra cứu và check-in bệnh nhân</CardDescription>
           </CardHeader>
         </Card>
 
@@ -154,16 +267,16 @@ export function ReceptionistCheckInScreen({
             {/* Search Type Selector */}
             <div className="flex gap-2">
               <Button
-                variant={searchType === 'phone' ? 'default' : 'outline'}
-                onClick={() => setSearchType('phone')}
+                variant={searchType === "phone" ? "default" : "outline"}
+                onClick={() => setSearchType("phone")}
                 className="flex-1"
               >
                 <Phone className="h-4 w-4 mr-2" />
                 Số điện thoại
               </Button>
               <Button
-                variant={searchType === 'booking_id' ? 'default' : 'outline'}
-                onClick={() => setSearchType('booking_id')}
+                variant={searchType === "booking_id" ? "default" : "outline"}
+                onClick={() => setSearchType("booking_id")}
                 className="flex-1"
               >
                 <Hash className="h-4 w-4 mr-2" />
@@ -176,13 +289,13 @@ export function ReceptionistCheckInScreen({
               <div className="flex-1">
                 <Input
                   placeholder={
-                    searchType === 'phone'
-                      ? 'Nhập số điện thoại để lọc...'
-                      : 'Nhập mã đặt chỗ để lọc...'
+                    searchType === "phone"
+                      ? "Nhập số điện thoại để lọc..."
+                      : "Nhập mã đặt chỗ để lọc..."
                   }
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
               </div>
               <Button onClick={handleSearch}>
@@ -201,9 +314,14 @@ export function ReceptionistCheckInScreen({
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div>
-                          <CardTitle className="text-xl">{searchResult.patientName}</CardTitle>
+                          <CardTitle className="text-xl">
+                            {searchResult.patientName}
+                          </CardTitle>
                           <CardDescription className="mt-1">
-                            Ngày sinh: {new Date(searchResult.patientDateOfBirth).toLocaleDateString('vi-VN')}
+                            Ngày sinh:{" "}
+                            {new Date(
+                              searchResult.patientDateOfBirth
+                            ).toLocaleDateString("vi-VN")}
                           </CardDescription>
                         </div>
                         {getSourceBadge(searchResult.source)}
@@ -218,7 +336,9 @@ export function ReceptionistCheckInScreen({
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <Hash className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-mono">{searchResult.bookingId}</span>
+                          <span className="font-mono">
+                            {searchResult.bookingId}
+                          </span>
                         </div>
                       </div>
 
@@ -227,9 +347,13 @@ export function ReceptionistCheckInScreen({
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
                           <span className="font-medium">
-                            {new Date(searchResult.appointmentDate).toLocaleDateString('vi-VN')}
+                            {new Date(
+                              searchResult.appointmentDate
+                            ).toLocaleDateString("vi-VN")}
                           </span>
-                          <Badge variant="outline">{getShiftLabel(searchResult.shift)}</Badge>
+                          <Badge variant="outline">
+                            {getShiftLabel(searchResult.shift)}
+                          </Badge>
                         </div>
 
                         {searchResult.doctorName && (
@@ -237,7 +361,9 @@ export function ReceptionistCheckInScreen({
                             <User className="h-4 w-4 text-muted-foreground" />
                             <span>{searchResult.doctorName}</span>
                             {searchResult.specialty && (
-                              <Badge variant="secondary">{searchResult.specialty}</Badge>
+                              <Badge variant="secondary">
+                                {searchResult.specialty}
+                              </Badge>
                             )}
                           </div>
                         )}
@@ -245,19 +371,27 @@ export function ReceptionistCheckInScreen({
                         {searchResult.roomNumber && (
                           <div className="flex items-center gap-2">
                             <Clock className="h-4 w-4 text-muted-foreground" />
-                            <span>Phòng: <strong>{searchResult.roomNumber}</strong></span>
+                            <span>
+                              Phòng: <strong>{searchResult.roomNumber}</strong>
+                            </span>
                           </div>
                         )}
 
                         <div>
-                          <Label className="text-xs text-muted-foreground">Lý do khám:</Label>
+                          <Label className="text-xs text-muted-foreground">
+                            Lý do khám:
+                          </Label>
                           <p className="text-sm mt-1">{searchResult.reason}</p>
                         </div>
 
                         {searchResult.notes && (
                           <div className="bg-yellow-50 border border-yellow-200 rounded p-2">
-                            <Label className="text-xs text-yellow-800 font-semibold">Ghi chú quan trọng:</Label>
-                            <p className="text-sm text-yellow-900 mt-1">{searchResult.notes}</p>
+                            <Label className="text-xs text-yellow-800 font-semibold">
+                              Ghi chú quan trọng:
+                            </Label>
+                            <p className="text-sm text-yellow-900 mt-1">
+                              {searchResult.notes}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -265,14 +399,20 @@ export function ReceptionistCheckInScreen({
                       {/* Status Badge */}
                       <div className="flex items-center gap-2">
                         <Label>Trạng thái:</Label>
-                        {searchResult.status === 'pending' && (
-                          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                        {searchResult.status === "pending" && (
+                          <Badge
+                            variant="secondary"
+                            className="bg-yellow-100 text-yellow-800"
+                          >
                             <Clock className="h-3 w-3 mr-1" />
                             Chưa check-in
                           </Badge>
                         )}
-                        {searchResult.status === 'checked_in' && (
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        {searchResult.status === "checked_in" && (
+                          <Badge
+                            variant="secondary"
+                            className="bg-green-100 text-green-800"
+                          >
                             <CheckCircle className="h-3 w-3 mr-1" />
                             Đã check-in
                           </Badge>
@@ -280,14 +420,19 @@ export function ReceptionistCheckInScreen({
                       </div>
 
                       {/* Action Buttons */}
-                      {searchResult.status === 'pending' && (
-                        <Button onClick={handleCheckIn} className="w-full" size="lg">
+                      {searchResult.status === "pending" && (
+                        <Button
+                          onClick={handleCheckIn}
+                          className="w-full !bg-green-600 hover:!bg-green-700 !text-white"
+                          size="lg"
+                          style={{ backgroundColor: "#16a34a", color: "white" }}
+                        >
                           <CheckCircle className="h-5 w-5 mr-2" />
                           Xác nhận Check-in và Cấp số
                         </Button>
                       )}
 
-                      {searchResult.status === 'checked_in' && (
+                      {searchResult.status === "checked_in" && (
                         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                           <p className="text-center text-green-800 font-semibold">
                             ✓ Bệnh nhân đã check-in thành công
@@ -329,28 +474,36 @@ export function ReceptionistCheckInScreen({
         {/* Danh sách lịch hẹn trước */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Danh sách lịch hẹn hôm nay</CardTitle>
+            <CardTitle className="text-base">
+              Danh sách lịch hẹn hôm nay
+            </CardTitle>
             <CardDescription>
               Bệnh nhân đã đặt lịch trước - Nhấn để check-in
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {mockAppointments.filter(apt => apt.status === 'pending').length === 0 ? (
+              {mockAppointments.filter((apt) => apt.status === "pending")
+                .length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">Không có lịch hẹn hôm nay</p>
                 </div>
               ) : (
                 mockAppointments
-                  .filter(apt => apt.status === 'pending')
+                  .filter((apt) => apt.status === "pending")
                   .map((apt) => (
-                    <Card key={apt.id} className="border hover:border-primary cursor-pointer transition-all">
+                    <Card
+                      key={apt.id}
+                      className="border hover:border-primary cursor-pointer transition-all"
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <h3 className="font-semibold text-lg">{apt.patientName}</h3>
+                              <h3 className="font-semibold text-lg">
+                                {apt.patientName}
+                              </h3>
                               <Badge className="bg-blue-500">Hẹn trước</Badge>
                             </div>
                             <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
@@ -364,7 +517,12 @@ export function ReceptionistCheckInScreen({
                               </div>
                               <div className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
-                                Ca {apt.shift === 'morning' ? 'Sáng' : apt.shift === 'afternoon' ? 'Chiều' : 'Tối'}
+                                Ca{" "}
+                                {apt.shift === "morning"
+                                  ? "Sáng"
+                                  : apt.shift === "afternoon"
+                                  ? "Chiều"
+                                  : "Tối"}
                               </div>
                               {apt.roomNumber && (
                                 <div className="flex items-center gap-1">
@@ -378,10 +536,12 @@ export function ReceptionistCheckInScreen({
                               </div>
                             )}
                           </div>
-                          <Button onClick={() => {
-                            setSearchResult(apt);
-                            setShowResult(true);
-                          }}>
+                          <Button
+                            onClick={() => {
+                              setSearchResult(apt);
+                              setShowResult(true);
+                            }}
+                          >
                             <CheckCircle className="h-4 w-4 mr-2" />
                             Check-in
                           </Button>
@@ -400,14 +560,79 @@ export function ReceptionistCheckInScreen({
             <CardTitle className="text-sm">Hướng dẫn sử dụng</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground space-y-2">
-            <p><strong>• Danh sách hẹn trước:</strong> Hiển thị tất cả lịch hẹn hôm nay, nhấn check-in để cấp số</p>
-            <p><strong>• Tra cứu/Lọc:</strong> Tìm kiếm nhanh theo SĐT hoặc mã đặt chỗ trong danh sách</p>
-            <p><strong>• Check-in:</strong> Xác nhận bệnh nhân đã đến và cấp số thứ tự tự động</p>
-            <p><strong>• Tạo hồ sơ mới:</strong> Dành cho bệnh nhân vãng lai hoặc lần đầu đến khám</p>
-            <p><strong>• Định dạng số:</strong> P101-001 (phòng-số thứ tự) hoặc G-001 (số chung)</p>
+            <p>
+              <strong>• Danh sách hẹn trước:</strong> Hiển thị tất cả lịch hẹn
+              hôm nay, nhấn check-in để cấp số
+            </p>
+            <p>
+              <strong>• Tra cứu/Lọc:</strong> Tìm kiếm nhanh theo SĐT hoặc mã
+              đặt chỗ trong danh sách
+            </p>
+            <p>
+              <strong>• Check-in:</strong> Xác nhận bệnh nhân đã đến và cấp số
+              thứ tự tự động
+            </p>
+            <p>
+              <strong>• Định dạng số:</strong> P101-001 (phòng-số thứ tự) hoặc
+              G-001 (số chung)
+            </p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Dialog: Check-in thành công */}
+      <Dialog
+        open={showCheckInSuccess}
+        onOpenChange={handleCloseCheckInSuccess}
+      >
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              <div className="flex justify-center mb-2">
+                <div className="rounded-full bg-green-100 p-3">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+              </div>
+              Check-in thành công
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            {searchResult && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <p className="text-sm font-medium text-blue-900 mb-1">
+                  {searchResult.patientName}
+                </p>
+                <p className="text-xs text-blue-700">
+                  {searchResult.bookingId}
+                </p>
+              </div>
+            )}
+
+            <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+              <p className="text-center text-sm text-green-800 font-medium mb-2">
+                Số thứ tự khám bệnh
+              </p>
+              <p className="text-center text-4xl font-bold text-green-600">
+                {checkInQueueNumber}
+              </p>
+            </div>
+
+            <div className="text-center text-sm text-muted-foreground space-y-1">
+              <p>Vui lòng đưa số này cho bệnh nhân</p>
+              <p>và hướng dẫn chờ tại khu vực chờ</p>
+            </div>
+          </div>
+
+          <Button
+            onClick={handleCloseCheckInSuccess}
+            className="w-full !bg-green-600 hover:!bg-green-700 !text-white"
+            style={{ backgroundColor: "#16a34a", color: "white" }}
+          >
+            Đóng
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

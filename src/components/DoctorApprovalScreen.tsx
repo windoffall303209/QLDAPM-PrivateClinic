@@ -19,10 +19,14 @@ interface DoctorApplication {
   degree: string;
 }
 
-export function DoctorApprovalScreen({ onNavigate }: DoctorApprovalScreenProps) {
+export function DoctorApprovalScreen({
+  onNavigate,
+}: DoctorApprovalScreenProps) {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedApp, setSelectedApp] = useState<DoctorApplication | null>(null);
+  const [selectedApp, setSelectedApp] = useState<DoctorApplication | null>(
+    null
+  );
 
   const applications: DoctorApplication[] = [
     {
@@ -60,30 +64,34 @@ export function DoctorApprovalScreen({ onNavigate }: DoctorApprovalScreenProps) 
     },
   ];
 
-  const filteredApplications = applications.filter(app => {
+  const filteredApplications = applications.filter((app) => {
     const matchesSearch =
       app.doctorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.specialty.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || app.status === filterStatus;
+    const matchesStatus = filterStatus === "all" || app.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
   const handleApprove = (id: string) => {
-    alert('Đã phê duyệt đơn đăng ký');
+    alert("Đã phê duyệt đơn đăng ký");
   };
 
   const handleReject = (id: string) => {
-    const reason = prompt('Lý do từ chối:');
+    const reason = prompt("Lý do từ chối:");
     if (reason) {
-      alert('Đã từ chối đơn đăng ký');
+      alert("Đã từ chối đơn đăng ký");
     }
   };
 
   return (
     <div className="p-3 sm:p-4 lg:p-6">
       <div className="mb-4 sm:mb-6">
-        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">Phê duyệt bác sĩ</h1>
-        <p className="text-xs sm:text-sm text-gray-600">Quản lý đơn đăng ký của bác sĩ</p>
+        <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">
+          Phê duyệt bác sĩ
+        </h1>
+        <p className="text-xs sm:text-sm text-gray-600">
+          Quản lý đơn đăng ký của bác sĩ
+        </p>
       </div>
 
       {/* Filters */}
@@ -111,14 +119,30 @@ export function DoctorApprovalScreen({ onNavigate }: DoctorApprovalScreenProps) 
         <table className="w-full min-w-[900px]">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">STT</th>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Họ tên</th>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Chuyên khoa</th>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Học vị</th>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">KN</th>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Ngày nộp</th>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">TT</th>
-              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">Thao tác</th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">
+                STT
+              </th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">
+                Họ tên
+              </th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">
+                Chuyên khoa
+              </th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">
+                Học vị
+              </th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">
+                KN
+              </th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">
+                Ngày nộp
+              </th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">
+                TT
+              </th>
+              <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium">
+                Thao tác
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -129,31 +153,57 @@ export function DoctorApprovalScreen({ onNavigate }: DoctorApprovalScreenProps) 
                   <div>{app.doctorName}</div>
                   <div className="text-xs text-gray-600">{app.email}</div>
                 </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">{app.specialty}</td>
+                <td className="px-4 py-3 text-sm whitespace-nowrap">
+                  {app.specialty}
+                </td>
                 <td className="px-4 py-3 text-sm">{app.degree}</td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">{app.experience} năm</td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">{app.applicationDate}</td>
+                <td className="px-4 py-3 text-sm whitespace-nowrap">
+                  {app.experience} năm
+                </td>
+                <td className="px-4 py-3 text-sm whitespace-nowrap">
+                  {app.applicationDate}
+                </td>
                 <td className="px-4 py-3 text-sm">
-                  <span className={`inline-block px-2 py-1 rounded text-xs ${
-                    app.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    app.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {app.status === 'pending' ? 'Chờ duyệt' :
-                     app.status === 'approved' ? 'Đã duyệt' : 'Từ chối'}
+                  <span
+                    className={`inline-block px-2 py-1 rounded text-xs ${
+                      app.status === "pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : app.status === "approved"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {app.status === "pending"
+                      ? "Chờ duyệt"
+                      : app.status === "approved"
+                      ? "Đã duyệt"
+                      : "Từ chối"}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-sm">
                   <div className="flex gap-1 whitespace-nowrap">
-                    <Button size="sm" variant="outline" onClick={() => setSelectedApp(app)}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setSelectedApp(app)}
+                    >
                       Chi tiết
                     </Button>
-                    {app.status === 'pending' && (
+                    {app.status === "pending" && (
                       <>
-                        <Button size="sm" onClick={() => handleApprove(app.id)}>
+                        <Button
+                          size="sm"
+                          onClick={() => handleApprove(app.id)}
+                          className="!bg-green-600 hover:!bg-green-700 !text-white"
+                          style={{ backgroundColor: "#16a34a", color: "white" }}
+                        >
                           Duyệt
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => handleReject(app.id)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleReject(app.id)}
+                        >
                           Từ chối
                         </Button>
                       </>
@@ -209,25 +259,45 @@ export function DoctorApprovalScreen({ onNavigate }: DoctorApprovalScreenProps) 
                 <div>
                   <span className="text-gray-600">Trạng thái:</span>
                   <div>
-                    <span className={`inline-block px-2 py-1 rounded text-xs ${
-                      selectedApp.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      selectedApp.status === 'approved' ? 'bg-green-100 text-green-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {selectedApp.status === 'pending' ? 'Chờ duyệt' :
-                       selectedApp.status === 'approved' ? 'Đã duyệt' : 'Từ chối'}
+                    <span
+                      className={`inline-block px-2 py-1 rounded text-xs ${
+                        selectedApp.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : selectedApp.status === "approved"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {selectedApp.status === "pending"
+                        ? "Chờ duyệt"
+                        : selectedApp.status === "approved"
+                        ? "Đã duyệt"
+                        : "Từ chối"}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="mt-6 flex justify-end gap-2">
-              {selectedApp.status === 'pending' && (
+              {selectedApp.status === "pending" && (
                 <>
-                  <Button onClick={() => { handleApprove(selectedApp.id); setSelectedApp(null); }}>
+                  <Button
+                    onClick={() => {
+                      handleApprove(selectedApp.id);
+                      setSelectedApp(null);
+                    }}
+                    className="!bg-green-600 hover:!bg-green-700 !text-white"
+                    style={{ backgroundColor: "#16a34a", color: "white" }}
+                  >
                     Phê duyệt
                   </Button>
-                  <Button variant="outline" onClick={() => { handleReject(selectedApp.id); setSelectedApp(null); }}>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      handleReject(selectedApp.id);
+                      setSelectedApp(null);
+                    }}
+                  >
                     Từ chối
                   </Button>
                 </>

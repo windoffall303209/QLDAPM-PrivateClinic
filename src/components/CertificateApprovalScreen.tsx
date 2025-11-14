@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Textarea } from './ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import React, { useState } from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Textarea } from "./ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "./ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import {
   FileCheck,
   Search,
@@ -17,86 +36,119 @@ import {
   Calendar,
   User,
   Award,
-  Clock
-} from 'lucide-react';
-import { DoctorCertificate, SPECIALTIES } from '../types';
+  Clock,
+} from "lucide-react";
+import { DoctorCertificate, SPECIALTIES } from "../types";
 
 interface CertificateApprovalScreenProps {
   onBack: () => void;
 }
 
-export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenProps) {
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCert, setSelectedCert] = useState<DoctorCertificate | null>(null);
+export function CertificateApprovalScreen({
+  onBack,
+}: CertificateApprovalScreenProps) {
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCert, setSelectedCert] = useState<DoctorCertificate | null>(
+    null
+  );
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
-  const [rejectReason, setRejectReason] = useState('');
+  const [rejectReason, setRejectReason] = useState("");
 
   // Mock data - Danh sách chứng chỉ chờ duyệt
   const [certificates, setCertificates] = useState<DoctorCertificate[]>([
     {
-      id: '1',
-      doctorId: 'DR001',
-      certificateName: 'Chứng chỉ hành nghề Bác sĩ',
-      issuer: 'Bộ Y tế',
-      issueDate: '2020-05-15',
-      expiryDate: '2025-05-15',
-      fileUrl: '/certificates/cert-001.pdf',
-      status: 'pending',
+      id: "1",
+      doctorId: "DR001",
+      certificateName: "Chứng chỉ hành nghề Bác sĩ",
+      issuer: "Bộ Y tế",
+      issueDate: "2020-05-15",
+      expiryDate: "2025-05-15",
+      fileUrl: "/certificates/cert-001.pdf",
+      status: "pending",
     },
     {
-      id: '2',
-      doctorId: 'DR002',
-      certificateName: 'Chứng chỉ chuyên khoa Tim mạch cấp II',
-      issuer: 'Trường Đại học Y Hà Nội',
-      issueDate: '2021-09-20',
-      expiryDate: '2026-09-20',
-      fileUrl: '/certificates/cert-002.pdf',
-      status: 'pending',
+      id: "2",
+      doctorId: "DR002",
+      certificateName: "Chứng chỉ chuyên khoa Tim mạch cấp II",
+      issuer: "Trường Đại học Y Hà Nội",
+      issueDate: "2021-09-20",
+      expiryDate: "2026-09-20",
+      fileUrl: "/certificates/cert-002.pdf",
+      status: "pending",
     },
     {
-      id: '3',
-      doctorId: 'DR003',
-      certificateName: 'Chứng chỉ Nhi khoa',
-      issuer: 'Bệnh viện Nhi đồng 1',
-      issueDate: '2022-03-10',
-      fileUrl: '/certificates/cert-003.pdf',
-      status: 'pending',
+      id: "3",
+      doctorId: "DR003",
+      certificateName: "Chứng chỉ Nhi khoa",
+      issuer: "Bệnh viện Nhi đồng 1",
+      issueDate: "2022-03-10",
+      fileUrl: "/certificates/cert-003.pdf",
+      status: "pending",
     },
     {
-      id: '4',
-      doctorId: 'DR004',
-      certificateName: 'Chứng chỉ hành nghề Bác sĩ',
-      issuer: 'Bộ Y tế',
-      issueDate: '2019-12-01',
-      expiryDate: '2024-12-01',
-      fileUrl: '/certificates/cert-004.pdf',
-      status: 'approved',
-      reviewedBy: 'Admin Nguyễn Văn An',
-      reviewedAt: '2024-09-20T10:00:00Z',
+      id: "4",
+      doctorId: "DR004",
+      certificateName: "Chứng chỉ hành nghề Bác sĩ",
+      issuer: "Bộ Y tế",
+      issueDate: "2019-12-01",
+      expiryDate: "2024-12-01",
+      fileUrl: "/certificates/cert-004.pdf",
+      status: "approved",
+      reviewedBy: "Admin Nguyễn Văn An",
+      reviewedAt: "2024-09-20T10:00:00Z",
     },
     {
-      id: '5',
-      doctorId: 'DR005',
-      certificateName: 'Chứng chỉ Da liễu',
-      issuer: 'Viện Da liễu Trung ương',
-      issueDate: '2023-06-15',
-      fileUrl: '/certificates/cert-005.pdf',
-      status: 'rejected',
-      rejectionReason: 'Chứng chỉ không rõ ràng, vui lòng tải lại ảnh chất lượng cao hơn',
-      reviewedBy: 'Admin Trần Thị Bình',
-      reviewedAt: '2024-09-21T14:30:00Z',
+      id: "5",
+      doctorId: "DR005",
+      certificateName: "Chứng chỉ Da liễu",
+      issuer: "Viện Da liễu Trung ương",
+      issueDate: "2023-06-15",
+      fileUrl: "/certificates/cert-005.pdf",
+      status: "rejected",
+      rejectionReason:
+        "Chứng chỉ không rõ ràng, vui lòng tải lại ảnh chất lượng cao hơn",
+      reviewedBy: "Admin Trần Thị Bình",
+      reviewedAt: "2024-09-21T14:30:00Z",
     },
   ]);
 
   // Thông tin bác sĩ mock (trong thực tế sẽ join từ database)
-  const doctorInfo: Record<string, { name: string; specialty: string; phone: string; email: string }> = {
-    DR001: { name: 'BS. Nguyễn Văn An', specialty: 'Đa khoa', phone: '0901234567', email: 'an.nguyen@clinic.vn' },
-    DR002: { name: 'BS. Trần Thị Mai', specialty: 'Tim mạch', phone: '0912345678', email: 'mai.tran@clinic.vn' },
-    DR003: { name: 'BS. Lê Văn Cường', specialty: 'Nhi khoa', phone: '0923456789', email: 'cuong.le@clinic.vn' },
-    DR004: { name: 'BS. Phạm Thị Dung', specialty: 'Thần kinh', phone: '0934567890', email: 'dung.pham@clinic.vn' },
-    DR005: { name: 'BS. Hoàng Văn Em', specialty: 'Da liễu', phone: '0945678901', email: 'em.hoang@clinic.vn' },
+  const doctorInfo: Record<
+    string,
+    { name: string; specialty: string; phone: string; email: string }
+  > = {
+    DR001: {
+      name: "BS. Nguyễn Văn An",
+      specialty: "Đa khoa",
+      phone: "0901234567",
+      email: "an.nguyen@clinic.vn",
+    },
+    DR002: {
+      name: "BS. Trần Thị Mai",
+      specialty: "Tim mạch",
+      phone: "0912345678",
+      email: "mai.tran@clinic.vn",
+    },
+    DR003: {
+      name: "BS. Lê Văn Cường",
+      specialty: "Nhi khoa",
+      phone: "0923456789",
+      email: "cuong.le@clinic.vn",
+    },
+    DR004: {
+      name: "BS. Phạm Thị Dung",
+      specialty: "Thần kinh",
+      phone: "0934567890",
+      email: "dung.pham@clinic.vn",
+    },
+    DR005: {
+      name: "BS. Hoàng Văn Em",
+      specialty: "Da liễu",
+      phone: "0945678901",
+      email: "em.hoang@clinic.vn",
+    },
   };
 
   const filteredCertificates = certificates.filter((cert) => {
@@ -106,7 +158,8 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
       doctor?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cert.issuer.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesStatus = filterStatus === 'all' || cert.status === filterStatus;
+    const matchesStatus =
+      filterStatus === "all" || cert.status === filterStatus;
 
     return matchesSearch && matchesStatus;
   });
@@ -123,28 +176,28 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
           c.id === cert.id
             ? {
                 ...c,
-                status: 'approved',
-                reviewedBy: 'Admin Nguyễn Văn An',
+                status: "approved",
+                reviewedBy: "Admin Nguyễn Văn An",
                 reviewedAt: new Date().toISOString(),
               }
             : c
         )
       );
-      alert('Đã phê duyệt chứng chỉ thành công!');
+      alert("Đã phê duyệt chứng chỉ thành công!");
       setShowDetailDialog(false);
     }
   };
 
   const handleReject = (cert: DoctorCertificate) => {
     setSelectedCert(cert);
-    setRejectReason('');
+    setRejectReason("");
     setShowRejectDialog(true);
     setShowDetailDialog(false);
   };
 
   const handleConfirmReject = () => {
     if (!rejectReason.trim()) {
-      alert('Vui lòng nhập lý do từ chối!');
+      alert("Vui lòng nhập lý do từ chối!");
       return;
     }
 
@@ -154,15 +207,15 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
           c.id === selectedCert.id
             ? {
                 ...c,
-                status: 'rejected',
+                status: "rejected",
                 rejectionReason: rejectReason,
-                reviewedBy: 'Admin Nguyễn Văn An',
+                reviewedBy: "Admin Nguyễn Văn An",
                 reviewedAt: new Date().toISOString(),
               }
             : c
         )
       );
-      alert('Đã từ chối chứng chỉ!');
+      alert("Đã từ chối chứng chỉ!");
       setShowRejectDialog(false);
       setSelectedCert(null);
     }
@@ -170,16 +223,22 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
 
   const handleViewFile = (fileUrl: string) => {
     // Simulate viewing file
-    alert(`Đang mở file: ${fileUrl}\n\n(Trong thực tế sẽ mở file PDF/hình ảnh)`);
+    alert(
+      `Đang mở file: ${fileUrl}\n\n(Trong thực tế sẽ mở file PDF/hình ảnh)`
+    );
   };
 
-  const getStatusBadge = (status: DoctorCertificate['status']) => {
+  const getStatusBadge = (status: DoctorCertificate["status"]) => {
     switch (status) {
-      case 'pending':
-        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Chờ duyệt</Badge>;
-      case 'approved':
+      case "pending":
+        return (
+          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+            Chờ duyệt
+          </Badge>
+        );
+      case "approved":
         return <Badge className="bg-green-500">Đã duyệt</Badge>;
-      case 'rejected':
+      case "rejected":
         return <Badge variant="destructive">Từ chối</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
@@ -188,9 +247,9 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
 
   const stats = {
     total: certificates.length,
-    pending: certificates.filter((c) => c.status === 'pending').length,
-    approved: certificates.filter((c) => c.status === 'approved').length,
-    rejected: certificates.filter((c) => c.status === 'rejected').length,
+    pending: certificates.filter((c) => c.status === "pending").length,
+    approved: certificates.filter((c) => c.status === "approved").length,
+    rejected: certificates.filter((c) => c.status === "rejected").length,
   };
 
   return (
@@ -221,8 +280,12 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
           <Card>
             <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4 md:pt-6 md:pb-6">
               <div className="text-center">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Tổng số</p>
-                <p className="text-base sm:text-xl md:text-2xl font-bold">{stats.total}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">
+                  Tổng số
+                </p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold">
+                  {stats.total}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -230,8 +293,12 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
           <Card>
             <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4 md:pt-6 md:pb-6">
               <div className="text-center">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Chờ duyệt</p>
-                <p className="text-base sm:text-xl md:text-2xl font-bold text-yellow-600">{stats.pending}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">
+                  Chờ duyệt
+                </p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-yellow-600">
+                  {stats.pending}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -239,8 +306,12 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
           <Card>
             <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4 md:pt-6 md:pb-6">
               <div className="text-center">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Đã duyệt</p>
-                <p className="text-base sm:text-xl md:text-2xl font-bold text-green-600">{stats.approved}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">
+                  Đã duyệt
+                </p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-green-600">
+                  {stats.approved}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -248,8 +319,12 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
           <Card>
             <CardContent className="pt-3 pb-3 px-2 sm:pt-4 sm:pb-4 sm:px-4 md:pt-6 md:pb-6">
               <div className="text-center">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Từ chối</p>
-                <p className="text-base sm:text-xl md:text-2xl font-bold text-red-600">{stats.rejected}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">
+                  Từ chối
+                </p>
+                <p className="text-base sm:text-xl md:text-2xl font-bold text-red-600">
+                  {stats.rejected}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -313,10 +388,12 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between gap-4">
                           {/* Left: Certificate Info */}
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-3 mb-3">
                               <Award className="h-5 w-5 text-primary" />
-                              <h3 className="font-semibold">{cert.certificateName}</h3>
+                              <h3 className="font-semibold">
+                                {cert.certificateName}
+                              </h3>
                               {getStatusBadge(cert.status)}
                             </div>
 
@@ -324,7 +401,9 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
                               <div>
                                 <div className="flex items-center gap-2 mb-2">
                                   <User className="h-4 w-4 text-muted-foreground" />
-                                  <span className="font-medium">{doctor?.name}</span>
+                                  <span className="font-medium">
+                                    {doctor?.name}
+                                  </span>
                                 </div>
                                 <div className="text-muted-foreground ml-6">
                                   {doctor?.specialty} • {doctor?.phone}
@@ -334,7 +413,9 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
                               <div>
                                 <div className="flex items-center gap-2 mb-2">
                                   <FileText className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-muted-foreground">Cơ quan cấp:</span>
+                                  <span className="text-muted-foreground">
+                                    Cơ quan cấp:
+                                  </span>
                                 </div>
                                 <div className="ml-6">{cert.issuer}</div>
                               </div>
@@ -342,10 +423,14 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
                               <div>
                                 <div className="flex items-center gap-2 mb-2">
                                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-muted-foreground">Ngày cấp:</span>
+                                  <span className="text-muted-foreground">
+                                    Ngày cấp:
+                                  </span>
                                 </div>
                                 <div className="ml-6">
-                                  {new Date(cert.issueDate).toLocaleDateString('vi-VN')}
+                                  {new Date(cert.issueDate).toLocaleDateString(
+                                    "vi-VN"
+                                  )}
                                 </div>
                               </div>
 
@@ -353,32 +438,43 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
                                 <div>
                                   <div className="flex items-center gap-2 mb-2">
                                     <Clock className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-muted-foreground">Hết hạn:</span>
+                                    <span className="text-muted-foreground">
+                                      Hết hạn:
+                                    </span>
                                   </div>
                                   <div className="ml-6">
-                                    {new Date(cert.expiryDate).toLocaleDateString('vi-VN')}
+                                    {new Date(
+                                      cert.expiryDate
+                                    ).toLocaleDateString("vi-VN")}
                                   </div>
                                 </div>
                               )}
                             </div>
 
-                            {cert.status === 'rejected' && cert.rejectionReason && (
-                              <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3">
-                                <p className="text-xs text-red-800 font-semibold mb-1">Lý do từ chối:</p>
-                                <p className="text-sm text-red-900">{cert.rejectionReason}</p>
-                              </div>
-                            )}
+                            {cert.status === "rejected" &&
+                              cert.rejectionReason && (
+                                <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3">
+                                  <p className="text-xs text-red-800 font-semibold mb-1">
+                                    Lý do từ chối:
+                                  </p>
+                                  <p className="text-sm text-red-900">
+                                    {cert.rejectionReason}
+                                  </p>
+                                </div>
+                              )}
 
                             {cert.reviewedBy && cert.reviewedAt && (
                               <div className="mt-3 text-xs text-muted-foreground">
-                                Đã xử lý bởi {cert.reviewedBy} •{' '}
-                                {new Date(cert.reviewedAt).toLocaleString('vi-VN')}
+                                Đã xử lý bởi {cert.reviewedBy} •{" "}
+                                {new Date(cert.reviewedAt).toLocaleString(
+                                  "vi-VN"
+                                )}
                               </div>
                             )}
                           </div>
 
                           {/* Right: Actions */}
-                          <div className="flex flex-col gap-2">
+                          <div className="flex flex-col gap-2 flex-shrink-0 relative z-10">
                             <Button
                               variant="outline"
                               size="sm"
@@ -388,12 +484,13 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
                               Chi tiết
                             </Button>
 
-                            {cert.status === 'pending' && (
+                            {cert.status === "pending" && (
                               <>
                                 <Button
                                   size="sm"
                                   onClick={() => handleApprove(cert)}
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="!bg-green-600 hover:!bg-green-700 !text-white"
+                                  style={{ backgroundColor: '#16a34a', color: 'white' }}
                                 >
                                   <CheckCircle2 className="h-4 w-4 mr-2" />
                                   Duyệt
@@ -435,11 +532,15 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Tên chứng chỉ:</span>
-                  <span className="font-medium">{selectedCert.certificateName}</span>
+                  <span className="font-medium">
+                    {selectedCert.certificateName}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Bác sĩ:</span>
-                  <span className="font-medium">{doctorInfo[selectedCert.doctorId]?.name}</span>
+                  <span className="font-medium">
+                    {doctorInfo[selectedCert.doctorId]?.name}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Cơ quan cấp:</span>
@@ -448,14 +549,18 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Ngày cấp:</span>
                   <span className="font-medium">
-                    {new Date(selectedCert.issueDate).toLocaleDateString('vi-VN')}
+                    {new Date(selectedCert.issueDate).toLocaleDateString(
+                      "vi-VN"
+                    )}
                   </span>
                 </div>
                 {selectedCert.expiryDate && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Ngày hết hạn:</span>
                     <span className="font-medium">
-                      {new Date(selectedCert.expiryDate).toLocaleDateString('vi-VN')}
+                      {new Date(selectedCert.expiryDate).toLocaleDateString(
+                        "vi-VN"
+                      )}
                     </span>
                   </div>
                 )}
@@ -474,11 +579,12 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
                 Xem file chứng chỉ
               </Button>
 
-              {selectedCert.status === 'pending' && (
+              {selectedCert.status === "pending" && (
                 <div className="flex gap-3">
                   <Button
                     onClick={() => handleApprove(selectedCert)}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    className="flex-1 !bg-green-600 hover:!bg-green-700 !text-white"
+                    style={{ backgroundColor: '#16a34a', color: 'white' }}
                   >
                     <CheckCircle2 className="h-4 w-4 mr-2" />
                     Phê duyệt
@@ -522,7 +628,10 @@ export function CertificateApprovalScreen({ onBack }: CertificateApprovalScreenP
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowRejectDialog(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setShowRejectDialog(false)}
+            >
               Hủy
             </Button>
             <Button variant="destructive" onClick={handleConfirmReject}>

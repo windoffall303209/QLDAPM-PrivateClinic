@@ -311,7 +311,7 @@ export function ManagerScheduleScreen({ onBack }: ManagerScheduleScreenProps) {
                       <Card key={request.id} className="border-2">
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1 space-y-3">
+                            <div className="flex-1 min-w-0 space-y-3">
                               {/* Header */}
                               <div className="flex items-center gap-2 flex-wrap">
                                 {getRequestTypeBadge(request.type)}
@@ -369,10 +369,11 @@ export function ManagerScheduleScreen({ onBack }: ManagerScheduleScreenProps) {
 
                             {/* Actions */}
                             {request.status === 'pending' && (
-                              <div className="flex flex-col gap-2">
+                              <div className="flex flex-col gap-2 flex-shrink-0 relative z-10">
                                 <Button
                                   size="sm"
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="!bg-green-600 hover:!bg-green-700 !text-white"
+                                  style={{ backgroundColor: '#16a34a', color: 'white' }}
                                   onClick={() => {
                                     setSelectedRequest(request);
                                     setReviewNote('');
@@ -513,7 +514,11 @@ export function ManagerScheduleScreen({ onBack }: ManagerScheduleScreenProps) {
               <XCircle className="h-4 w-4 mr-2" />
               Từ chối
             </Button>
-            <Button className="bg-green-600 hover:bg-green-700" onClick={() => handleConfirmReview('approve')}>
+            <Button 
+              className="!bg-green-600 hover:!bg-green-700 !text-white" 
+              style={{ backgroundColor: '#16a34a', color: 'white' }}
+              onClick={() => handleConfirmReview('approve')}
+            >
               <CheckCircle2 className="h-4 w-4 mr-2" />
               Phê duyệt
             </Button>

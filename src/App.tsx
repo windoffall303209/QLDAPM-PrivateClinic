@@ -203,7 +203,7 @@ export default function App() {
             onNavigateToCreateProfile={() => setCurrentScreen('patient-registration')}
             onCheckInComplete={(appointment, queueNumber) => {
               console.log('Check-in complete:', appointment, queueNumber);
-              alert(`Check-in thành công! Số thứ tự: ${queueNumber}`);
+              // Dialog sẽ được hiển thị trong ReceptionistCheckInScreen component
             }}
           />
         );

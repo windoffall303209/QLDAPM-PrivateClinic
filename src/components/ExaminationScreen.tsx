@@ -57,37 +57,76 @@ export function ExaminationScreen({ onNavigate }: ExaminationScreenProps) {
 
   const [referralData, setReferralData] = useState({
     type: '' as 'lab' | 'imaging' | 'specialist' | '',
+    room: '', // Phòng sẽ chuyển đến
     notes: '',
     priority: 'normal' as 'normal' | 'urgent',
   });
 
+  // Mock data - Danh sách phòng khám
+  const mockRooms = [
+    { id: 'P101', name: 'P101 - Nội khoa' },
+    { id: 'P102', name: 'P102 - Tim mạch' },
+    { id: 'P103', name: 'P103 - Ngoại khoa' },
+    { id: 'P104', name: 'P104 - Tai mũi họng' },
+    { id: 'P105', name: 'P105 - Mắt' },
+    { id: 'LAB', name: 'Phòng xét nghiệm' },
+    { id: 'IMG', name: 'Phòng chẩn đoán hình ảnh' },
+  ];
+
   const waitingPatients: PatientInQueue[] = [
     {
       id: '1',
-      queueNumber: 'P1-AM-005',
+      queueNumber: 'P101-001',
       name: 'Nguyễn Văn An',
-      age: 45,
+      age: 47,
       time: '08:00',
-      reason: 'Đau đầu, chóng mặt',
+      reason: 'Khám tổng quát tim mạch',
       phone: '0901234567',
     },
     {
       id: '2',
-      queueNumber: 'P1-AM-006',
-      name: 'Lê Thị Bình',
-      age: 32,
+      queueNumber: 'P101-002',
+      name: 'Lê Thị Cẩm',
+      age: 35,
       time: '08:30',
-      reason: 'Ho, sốt',
+      reason: 'Khám tổng quát',
       phone: '0912345678',
     },
     {
       id: '3',
-      queueNumber: 'P1-AM-007',
-      name: 'Trần Văn Cường',
-      age: 28,
+      queueNumber: 'P102-001',
+      name: 'Phạm Minh Đức',
+      age: 30,
       time: '09:00',
-      reason: 'Đau bụng',
+      reason: 'Khám sức khỏe định kỳ',
       phone: '0923456789',
+    },
+    {
+      id: '4',
+      queueNumber: 'P103-001',
+      name: 'Hoàng Thị Phượng',
+      age: 57,
+      time: '09:30',
+      reason: 'Tái khám sau phẫu thuật',
+      phone: '0934567890',
+    },
+    {
+      id: '5',
+      queueNumber: 'P101-003',
+      name: 'Trần Văn Hùng',
+      age: 69,
+      time: '10:00',
+      reason: 'Kiểm tra huyết áp',
+      phone: '0945678901',
+    },
+    {
+      id: '6',
+      queueNumber: 'P102-002',
+      name: 'Nguyễn Thị Lan',
+      age: 40,
+      time: '10:30',
+      reason: 'Khám da liễu',
+      phone: '0956789012',
     },
   ];
 
@@ -117,21 +156,25 @@ export function ExaminationScreen({ onNavigate }: ExaminationScreenProps) {
       return;
     }
 
+    if (!referralData.room) {
+      alert('Vui lòng chọn phòng sẽ chuyển đến!');
+      return;
+    }
+
     const referralTypeLabel =
       referralData.type === 'lab' ? 'Xét nghiệm' :
       referralData.type === 'imaging' ? 'Chẩn đoán hình ảnh' :
       'Chuyên khoa';
 
+    const selectedRoom = mockRooms.find(r => r.id === referralData.room);
+
     // Sinh số thứ tự cho phòng chuyển tuyến
-    const referralQueueNumber = `${
-      referralData.type === 'lab' ? 'LAB' :
-      referralData.type === 'imaging' ? 'IMG' :
-      'SPEC'
-    }-${String(Math.floor(Math.random() * 100) + 1).padStart(3, '0')}`;
+    const referralQueueNumber = `${referralData.room}-${String(Math.floor(Math.random() * 100) + 1).padStart(3, '0')}`;
 
     alert(
       `Đã tạo phiếu chuyển tuyến nội bộ:\n\n` +
       `Loại: ${referralTypeLabel}\n` +
+      `Phòng chuyển đến: ${selectedRoom?.name || referralData.room}\n` +
       `Số thứ tự: ${referralQueueNumber}\n` +
       `Ưu tiên: ${referralData.priority === 'urgent' ? 'Khẩn cấp' : 'Bình thường'}\n` +
       `Ghi chú: ${referralData.notes || 'Không có'}\n\n` +
@@ -141,6 +184,7 @@ export function ExaminationScreen({ onNavigate }: ExaminationScreenProps) {
     setShowReferralSection(false);
     setReferralData({
       type: '',
+      room: '',
       notes: '',
       priority: 'normal',
     });
@@ -386,6 +430,25 @@ export function ExaminationScreen({ onNavigate }: ExaminationScreenProps) {
                                     Chuyển chuyên khoa khác
                                   </div>
                                 </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="referral-room">Phòng chuyển đến *</Label>
+                            <Select
+                              value={referralData.room}
+                              onValueChange={(value) => handleReferralChange('room', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Chọn phòng..." />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {mockRooms.map((room) => (
+                                  <SelectItem key={room.id} value={room.id}>
+                                    {room.name}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </div>

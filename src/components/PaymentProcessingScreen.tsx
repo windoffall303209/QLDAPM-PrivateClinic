@@ -78,20 +78,28 @@ export function PaymentProcessingScreen({ onBack }: PaymentProcessingScreenProps
       invoiceNumber: 'INV-2025111302',
       appointmentId: 'APT002',
       patientId: 'PT002',
-      patientName: 'Lê Thị Bình',
+      patientName: 'Lê Thị Cẩm',
       items: [
         {
           id: '1',
-          description: 'Khám chuyên khoa - Nhi',
+          description: 'Khám tổng quát - Nội khoa',
           type: 'consultation',
           quantity: 1,
           unitPrice: 250000,
           total: 250000,
         },
+        {
+          id: '2',
+          description: 'Thuốc kháng sinh',
+          type: 'medication',
+          quantity: 2,
+          unitPrice: 80000,
+          total: 160000,
+        },
       ],
-      subtotal: 250000,
+      subtotal: 410000,
       discount: 0,
-      total: 250000,
+      total: 410000,
       method: 'cash',
       status: 'pending',
       createdAt: '2025-11-13T10:30:00Z',
@@ -101,11 +109,11 @@ export function PaymentProcessingScreen({ onBack }: PaymentProcessingScreenProps
       invoiceNumber: 'INV-2025111303',
       appointmentId: 'APT003',
       patientId: 'PT003',
-      patientName: 'Trần Văn Cường',
+      patientName: 'Phạm Minh Đức',
       items: [
         {
           id: '1',
-          description: 'Khám tổng quát',
+          description: 'Khám sức khỏe định kỳ',
           type: 'consultation',
           quantity: 1,
           unitPrice: 200000,
@@ -113,20 +121,82 @@ export function PaymentProcessingScreen({ onBack }: PaymentProcessingScreenProps
         },
         {
           id: '2',
-          description: 'Chụp X-quang ngực',
+          description: 'Xét nghiệm tổng quát',
+          type: 'lab',
+          quantity: 1,
+          unitPrice: 120000,
+          total: 120000,
+        },
+      ],
+      subtotal: 320000,
+      discount: 0,
+      total: 320000,
+      method: 'momo',
+      status: 'paid',
+      paidAt: '2025-11-13T11:00:00Z',
+      createdAt: '2025-11-13T10:45:00Z',
+    },
+    {
+      id: '4',
+      invoiceNumber: 'INV-2025111304',
+      appointmentId: 'APT004',
+      patientId: 'PT004',
+      patientName: 'Hoàng Thị Phượng',
+      items: [
+        {
+          id: '1',
+          description: 'Tái khám sau phẫu thuật',
+          type: 'consultation',
+          quantity: 1,
+          unitPrice: 350000,
+          total: 350000,
+        },
+        {
+          id: '2',
+          description: 'Chụp X-quang kiểm tra',
           type: 'imaging',
           quantity: 1,
           unitPrice: 180000,
           total: 180000,
         },
       ],
-      subtotal: 380000,
+      subtotal: 530000,
       discount: 0,
-      total: 380000,
+      total: 530000,
       method: 'cash',
-      status: 'paid',
-      paidAt: '2025-11-13T11:00:00Z',
-      createdAt: '2025-11-13T10:45:00Z',
+      status: 'pending',
+      createdAt: '2025-11-13T11:15:00Z',
+    },
+    {
+      id: '5',
+      invoiceNumber: 'INV-2025111305',
+      appointmentId: 'APT005',
+      patientId: 'PT005',
+      patientName: 'Trần Văn Hùng',
+      items: [
+        {
+          id: '1',
+          description: 'Khám tim mạch - Kiểm tra huyết áp',
+          type: 'consultation',
+          quantity: 1,
+          unitPrice: 300000,
+          total: 300000,
+        },
+        {
+          id: '2',
+          description: 'Thuốc hạ huyết áp',
+          type: 'medication',
+          quantity: 4,
+          unitPrice: 75000,
+          total: 300000,
+        },
+      ],
+      subtotal: 600000,
+      discount: 0,
+      total: 600000,
+      method: 'cash',
+      status: 'pending',
+      createdAt: '2025-11-13T11:45:00Z',
     },
   ]);
 
@@ -319,7 +389,8 @@ export function PaymentProcessingScreen({ onBack }: PaymentProcessingScreenProps
                                 <Button
                                   onClick={() => handleExportInvoice(invoice)}
                                   size="sm"
-                                  className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                                  className="w-full mt-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold"
+                                  style={{ backgroundColor: '#2563eb', color: 'white' }}
                                 >
                                   <Download className="h-4 w-4 mr-2" />
                                   Xuất hóa đơn
