@@ -107,45 +107,32 @@ export function ReceptionistDashboardScreen({
     }
   };
 
-  const filteredAppointments = todayAppointments.filter((appointment) => {
+  const waitingAppointments = todayAppointments.filter(a => a.status === 'waiting');
+
+  const filteredAppointments = waitingAppointments.filter((appointment) => {
     const matchesSearch =
       appointment.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       appointment.phone.includes(searchQuery);
-    const matchesStatus = filterStatus === "all" || appointment.status === filterStatus;
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   });
 
   return (
     <div className="p-3 sm:p-4 lg:p-6">
       <div className="mb-3 sm:mb-4">
         <h1 className="text-base sm:text-lg lg:text-xl font-semibold mb-1">
-          Danh sách lịch hẹn - {new Date().toLocaleDateString("vi-VN")}
+          Danh sách lịch chờ khám - {new Date().toLocaleDateString("vi-VN")}
         </h1>
-        <p className="text-xs sm:text-sm text-gray-600">Tổng: {todayAppointments.length} bệnh nhân</p>
+        <p className="text-xs sm:text-sm text-gray-600">Bệnh nhân đang chờ khám: {waitingAppointments.length}</p>
       </div>
 
-      {/* Filters */}
-      <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
+      {/* Search */}
+      <div className="mb-3 sm:mb-4 flex gap-2">
         <Input
           placeholder="Tìm tên/SĐT..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full sm:max-w-xs text-sm"
+          className="flex-1 text-sm"
         />
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="border rounded px-3 py-2 text-sm"
-        >
-          <option value="all">Tất cả</option>
-          <option value="waiting">Chờ khám</option>
-          <option value="in_progress">Đang khám</option>
-          <option value="completed">Hoàn thành</option>
-          <option value="cancelled">Đã hủy</option>
-        </select>
-        <Button onClick={() => onNavigate("appointment-booking")} className="text-sm">
-          + Đặt lịch
-        </Button>
       </div>
 
       {/* Table */}

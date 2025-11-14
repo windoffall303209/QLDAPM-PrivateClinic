@@ -93,6 +93,43 @@ export function DashboardScreen({ userRole, onNavigate, onLogout }: DashboardScr
     ];
   };
 
+  const getWaitingPatients = () => {
+    return [
+      {
+        patientName: 'Nguyễn Văn An',
+        dateOfBirth: '1978',
+        appointmentTime: '08:00',
+        room: 'P101',
+        doctorName: 'BS. Trần Thị B',
+        status: 'Chờ khám',
+      },
+      {
+        patientName: 'Lê Thị Cẩm',
+        dateOfBirth: '1990',
+        appointmentTime: '08:30',
+        room: 'P101',
+        doctorName: 'BS. Trần Thị B',
+        status: 'Chờ khám',
+      },
+      {
+        patientName: 'Phạm Minh Đức',
+        dateOfBirth: '1995',
+        appointmentTime: '09:00',
+        room: 'P102',
+        doctorName: 'BS. Nguyễn Văn E',
+        status: 'Chờ khám',
+      },
+      {
+        patientName: 'Hoàng Thị Phượng',
+        dateOfBirth: '1968',
+        appointmentTime: '09:30',
+        room: 'P103',
+        doctorName: 'BS. Lê Minh G',
+        status: 'Chờ khám',
+      },
+    ];
+  };
+
   return (
     <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto">
       <div className="mb-4 sm:mb-6 flex items-start justify-between">
@@ -126,50 +163,85 @@ export function DashboardScreen({ userRole, onNavigate, onLogout }: DashboardScr
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="mb-4 sm:mb-6">
-        <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Tác vụ nhanh</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          {getQuickActions().map((action, index) => (
-            <Button
-              key={index}
-              variant="outline"
-              className="w-full justify-start text-sm"
-              onClick={action.action}
-            >
-              {action.title}
-            </Button>
-          ))}
+      {/* Quick Actions - Ẩn cho receptionist */}
+      {userRole !== 'receptionist' && (
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">Tác vụ nhanh</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {getQuickActions().map((action, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                className="w-full justify-start text-sm"
+                onClick={action.action}
+              >
+                {action.title}
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Recent Activities */}
+      {/* Recent Activities / Waiting List */}
       <div>
         <h2 className="text-sm sm:text-base font-medium mb-2 sm:mb-3">
-          {userRole === 'patient' ? 'Lịch hẹn sắp tới' : 'Hoạt động gần đây'}
+          {userRole === 'patient' ? 'Lịch hẹn sắp tới' : userRole === 'receptionist' ? 'Danh sách chờ khám' : 'Hoạt động gần đây'}
         </h2>
         <div className="border rounded overflow-x-auto">
-          <table className="w-full min-w-[500px]">
-            <tbody>
-              {getRecentActivities().map((activity, index) => (
-                <tr key={index} className={index > 0 ? 'border-t' : ''}>
-                  <td className="px-3 sm:px-4 py-2 sm:py-3">
-                    <div className="font-medium text-xs sm:text-sm">{activity.title}</div>
-                    <div className="text-xs sm:text-sm text-gray-600">{activity.detail}</div>
-                  </td>
-                  <td className="px-3 sm:px-4 py-2 sm:py-3 text-right">
-                    <span className={`inline-block px-2 py-1 rounded text-xs ${
-                      activity.status === 'Hoàn thành' ? 'bg-green-100 text-green-800' :
-                      activity.status === 'Đã đặt' ? 'bg-blue-100 text-blue-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {activity.status}
-                    </span>
-                  </td>
+          {userRole === 'receptionist' ? (
+            <table className="w-full min-w-[700px]">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-3 sm:px-4 py-2 text-left text-xs sm:text-sm font-medium">STT</th>
+                  <th className="px-3 sm:px-4 py-2 text-left text-xs sm:text-sm font-medium">Tên bệnh nhân</th>
+                  <th className="px-3 sm:px-4 py-2 text-left text-xs sm:text-sm font-medium">Năm sinh</th>
+                  <th className="px-3 sm:px-4 py-2 text-left text-xs sm:text-sm font-medium">Giờ</th>
+                  <th className="px-3 sm:px-4 py-2 text-left text-xs sm:text-sm font-medium">Phòng</th>
+                  <th className="px-3 sm:px-4 py-2 text-left text-xs sm:text-sm font-medium">Bác sĩ</th>
+                  <th className="px-3 sm:px-4 py-2 text-left text-xs sm:text-sm font-medium">Trạng thái</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {getWaitingPatients().map((patient, index) => (
+                  <tr key={index} className="border-t hover:bg-gray-50">
+                    <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">{index + 1}</td>
+                    <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium">{patient.patientName}</td>
+                    <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">{patient.dateOfBirth}</td>
+                    <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">{patient.appointmentTime}</td>
+                    <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">{patient.room}</td>
+                    <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">{patient.doctorName}</td>
+                    <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm">
+                      <span className="inline-block px-2 py-1 rounded text-xs bg-yellow-100 text-yellow-800">
+                        {patient.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <table className="w-full min-w-[500px]">
+              <tbody>
+                {getRecentActivities().map((activity, index) => (
+                  <tr key={index} className={index > 0 ? 'border-t' : ''}>
+                    <td className="px-3 sm:px-4 py-2 sm:py-3">
+                      <div className="font-medium text-xs sm:text-sm">{activity.title}</div>
+                      <div className="text-xs sm:text-sm text-gray-600">{activity.detail}</div>
+                    </td>
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-right">
+                      <span className={`inline-block px-2 py-1 rounded text-xs ${
+                        activity.status === 'Hoàn thành' ? 'bg-green-100 text-green-800' :
+                        activity.status === 'Đã đặt' ? 'bg-blue-100 text-blue-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {activity.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

@@ -31,7 +31,7 @@ export function DoctorQueueScreen({
   const [queueList, setQueueList] = useState<QueueNumber[]>([
     {
       id: 'Q001',
-      number: 'P1-AM-001',
+      number: 'P101-001',
       type: 'room',
       appointmentId: 'APT001',
       patientName: 'Nguyễn Văn An',
@@ -43,7 +43,7 @@ export function DoctorQueueScreen({
     },
     {
       id: 'Q002',
-      number: 'P1-AM-002',
+      number: 'P101-002',
       type: 'room',
       appointmentId: 'APT002',
       patientName: 'Trần Thị Bình',
@@ -55,7 +55,7 @@ export function DoctorQueueScreen({
     },
     {
       id: 'Q003',
-      number: 'P1-AM-003',
+      number: 'P101-003',
       type: 'room',
       appointmentId: 'APT003',
       patientName: 'Lê Văn Cường',
@@ -67,7 +67,7 @@ export function DoctorQueueScreen({
     },
     {
       id: 'Q004',
-      number: 'P1-AM-004',
+      number: 'P101-004',
       type: 'room',
       appointmentId: 'APT004',
       patientName: 'Phạm Thị Dung',
@@ -150,7 +150,7 @@ export function DoctorQueueScreen({
               Danh sách bệnh nhân chờ khám
             </CardTitle>
             <CardDescription>
-              Sắp xếp theo số thứ tự tăng dần • Phòng P101 • Ca sáng
+              Sắp xếp theo số thứ tự tăng dần • Phòng P101 • Mã số: P101-xxx
             </CardDescription>
           </CardHeader>
           <CardContent>

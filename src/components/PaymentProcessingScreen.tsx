@@ -169,6 +169,11 @@ export function PaymentProcessingScreen({ onBack }: PaymentProcessingScreenProps
     setShowInvoiceDialog(true);
   };
 
+  const handleExportInvoice = (invoice: Payment) => {
+    // Simulate invoice export
+    alert(`Đang xuất hóa đơn ${invoice.invoiceNumber}...\n\nChức năng xuất file sẽ được triển khai với thư viện jsPDF/xlsx`);
+  };
+
   const handleCloseSuccess = () => {
     setShowSuccessDialog(false);
     setSelectedInvoice(null);
@@ -307,9 +312,19 @@ export function PaymentProcessingScreen({ onBack }: PaymentProcessingScreenProps
                             </div>
 
                             {invoice.status === 'paid' && invoice.paidAt && (
-                              <div className="text-xs text-muted-foreground mt-2">
-                                Đã thanh toán: {new Date(invoice.paidAt).toLocaleString('vi-VN')}
-                              </div>
+                              <>
+                                <div className="text-xs text-muted-foreground mt-2">
+                                  Đã thanh toán: {new Date(invoice.paidAt).toLocaleString('vi-VN')}
+                                </div>
+                                <Button
+                                  onClick={() => handleExportInvoice(invoice)}
+                                  size="sm"
+                                  className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                                >
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Xuất hóa đơn
+                                </Button>
+                              </>
                             )}
                           </div>
                         </div>

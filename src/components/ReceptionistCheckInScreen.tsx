@@ -82,16 +82,16 @@ export function ReceptionistCheckInScreen({
   const handleCheckIn = () => {
     if (!searchResult) return;
 
-    // Sinh số thứ tự
+    // Sinh số thứ tự theo định dạng P101-001
     let queueNumber = '';
 
-    if (searchResult.roomNumber && searchResult.shift) {
-      // Cấp số theo phòng (đã biết phòng/ca)
-      const shiftCode = searchResult.shift === 'morning' ? 'AM' : searchResult.shift === 'afternoon' ? 'PM' : 'EV';
-      const roomCode = searchResult.roomNumber.replace('P', '');
-      queueNumber = `P${roomCode}-${shiftCode}-${String(Math.floor(Math.random() * 100) + 1).padStart(3, '0')}`;
+    if (searchResult.roomNumber) {
+      // Cấp số theo phòng: P101-001, P102-001, etc.
+      const roomNumber = searchResult.roomNumber; // P101, P102...
+      const sequenceNumber = String(Math.floor(Math.random() * 100) + 1).padStart(3, '0');
+      queueNumber = `${roomNumber}-${sequenceNumber}`;
     } else {
-      // Cấp số chung (chưa biết phòng)
+      // Cấp số chung (chưa biết phòng): G-001
       queueNumber = `G-${String(Math.floor(Math.random() * 100) + 1).padStart(3, '0')}`;
     }
 
@@ -125,18 +125,32 @@ export function ReceptionistCheckInScreen({
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto space-y-4">
+        {/* Header */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Search className="h-6 w-6" />
-              Tra cứu và Check-in bệnh nhân
+              <CheckCircle className="h-6 w-6" />
+              Check-in bệnh nhân
             </CardTitle>
             <CardDescription>
-              Tra cứu thông tin đăng ký bằng số điện thoại hoặc mã đặt chỗ
+              Tra cứu và check-in bệnh nhân
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+        </Card>
+
+        {/* Search Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Search className="h-5 w-5" />
+              Tra cứu bệnh nhân
+            </CardTitle>
+            <CardDescription>
+              Tìm kiếm trong danh sách lịch hẹn hoặc tạo hồ sơ mới
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             {/* Search Type Selector */}
             <div className="flex gap-2">
               <Button
@@ -160,36 +174,20 @@ export function ReceptionistCheckInScreen({
             {/* Search Input */}
             <div className="flex gap-2">
               <div className="flex-1">
-                <Label htmlFor="search">
-                  {searchType === 'phone' ? 'Nhập số điện thoại' : 'Nhập mã đặt chỗ'}
-                </Label>
                 <Input
-                  id="search"
                   placeholder={
                     searchType === 'phone'
-                      ? 'VD: 0901234567'
-                      : 'VD: BK2024111301'
+                      ? 'Nhập số điện thoại để lọc...'
+                      : 'Nhập mã đặt chỗ để lọc...'
                   }
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 />
               </div>
-              <Button onClick={handleSearch} className="mt-6">
+              <Button onClick={handleSearch}>
                 <Search className="h-4 w-4 mr-2" />
-                Tra cứu
-              </Button>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={onNavigateToCreateProfile}
-                className="flex-1"
-              >
-                <UserPlus className="h-4 w-4 mr-2" />
-                Tạo hồ sơ mới (Walk-in)
+                Lọc
               </Button>
             </div>
 
@@ -328,17 +326,85 @@ export function ReceptionistCheckInScreen({
           </CardContent>
         </Card>
 
+        {/* Danh sách lịch hẹn trước */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Danh sách lịch hẹn hôm nay</CardTitle>
+            <CardDescription>
+              Bệnh nhân đã đặt lịch trước - Nhấn để check-in
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {mockAppointments.filter(apt => apt.status === 'pending').length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Không có lịch hẹn hôm nay</p>
+                </div>
+              ) : (
+                mockAppointments
+                  .filter(apt => apt.status === 'pending')
+                  .map((apt) => (
+                    <Card key={apt.id} className="border hover:border-primary cursor-pointer transition-all">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-semibold text-lg">{apt.patientName}</h3>
+                              <Badge className="bg-blue-500">Hẹn trước</Badge>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <Phone className="h-3 w-3" />
+                                {apt.patientPhone}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Hash className="h-3 w-3" />
+                                {apt.bookingId}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                Ca {apt.shift === 'morning' ? 'Sáng' : apt.shift === 'afternoon' ? 'Chiều' : 'Tối'}
+                              </div>
+                              {apt.roomNumber && (
+                                <div className="flex items-center gap-1">
+                                  <span>Phòng: {apt.roomNumber}</span>
+                                </div>
+                              )}
+                            </div>
+                            {apt.notes && (
+                              <div className="mt-2 text-xs bg-yellow-50 border border-yellow-200 rounded p-2 text-yellow-900">
+                                <strong>Ghi chú:</strong> {apt.notes}
+                              </div>
+                            )}
+                          </div>
+                          <Button onClick={() => {
+                            setSearchResult(apt);
+                            setShowResult(true);
+                          }}>
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Check-in
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Helper Card */}
-        <Card className="mt-4">
+        <Card>
           <CardHeader>
             <CardTitle className="text-sm">Hướng dẫn sử dụng</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground space-y-2">
-            <p><strong>• Quầy Express:</strong> Cho bệnh nhân đã đặt lịch trước (online booking)</p>
-            <p><strong>• Tra cứu:</strong> Nhập SĐT hoặc mã đặt chỗ để tìm lịch hẹn</p>
-            <p><strong>• Check-in:</strong> Xác nhận bệnh nhân đã đến và cấp số thứ tự</p>
-            <p><strong>• Walk-in:</strong> Tạo hồ sơ mới cho bệnh nhân vãng lai (chưa đặt lịch)</p>
-            <p><strong>• Số thứ tự:</strong> G-xxx (số chung), P1-AM-xxx (số theo phòng/ca)</p>
+            <p><strong>• Danh sách hẹn trước:</strong> Hiển thị tất cả lịch hẹn hôm nay, nhấn check-in để cấp số</p>
+            <p><strong>• Tra cứu/Lọc:</strong> Tìm kiếm nhanh theo SĐT hoặc mã đặt chỗ trong danh sách</p>
+            <p><strong>• Check-in:</strong> Xác nhận bệnh nhân đã đến và cấp số thứ tự tự động</p>
+            <p><strong>• Tạo hồ sơ mới:</strong> Dành cho bệnh nhân vãng lai hoặc lần đầu đến khám</p>
+            <p><strong>• Định dạng số:</strong> P101-001 (phòng-số thứ tự) hoặc G-001 (số chung)</p>
           </CardContent>
         </Card>
       </div>

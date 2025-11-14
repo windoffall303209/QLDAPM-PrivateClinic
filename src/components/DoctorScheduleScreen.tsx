@@ -88,33 +88,12 @@ export function DoctorScheduleScreen({ onNavigate }: DoctorScheduleScreenProps) 
   ]);
 
   const handleAddSchedule = () => {
-    // Kiểm tra trùng lặp
-    const duplicate = schedules.find(
-      (s) =>
-        s.date === newSchedule.date &&
-        s.shift === newSchedule.shift &&
-        s.doctorId === 'DR001'
-    );
+    // Hiển thị thông báo phê duyệt
+    alert('Yêu cầu thêm lịch làm việc đã được gửi!\n\nBạn cần đợi sự phê duyệt từ Giám đốc phòng khám.\n\nYêu cầu của bạn sẽ được xem xét và thông báo qua email.');
 
-    if (duplicate) {
-      alert('Bạn đã có lịch làm việc vào ca này rồi!');
-      return;
-    }
+    // Trong thực tế, yêu cầu sẽ được gửi đến Manager để phê duyệt
+    // và chỉ được thêm vào lịch sau khi được phê duyệt
 
-    const schedule: DoctorSchedule = {
-      id: Date.now().toString(),
-      doctorId: 'DR001',
-      doctorName: 'BS. Nguyễn Văn An',
-      date: newSchedule.date,
-      shift: newSchedule.shift,
-      roomNumber: newSchedule.roomNumber,
-      maxPatients: 12,
-      currentPatients: 0,
-      status: 'available',
-      createdAt: new Date().toISOString(),
-    };
-
-    setSchedules([...schedules, schedule]);
     setShowAddDialog(false);
     setNewSchedule({
       date: new Date().toISOString().split('T')[0],
@@ -124,8 +103,12 @@ export function DoctorScheduleScreen({ onNavigate }: DoctorScheduleScreenProps) 
   };
 
   const handleDeleteSchedule = (id: string) => {
-    if (confirm('Bạn có chắc muốn xóa ca làm việc này?')) {
-      setSchedules(schedules.filter((s) => s.id !== id));
+    if (confirm('Bạn có chắc muốn gửi yêu cầu xóa ca làm việc này?')) {
+      // Hiển thị thông báo phê duyệt
+      alert('Yêu cầu xóa lịch làm việc đã được gửi!\n\nBạn cần đợi sự phê duyệt từ Giám đốc phòng khám.\n\nYêu cầu của bạn sẽ được xem xét và thông báo qua email.');
+
+      // Trong thực tế, yêu cầu xóa sẽ được gửi đến Manager để phê duyệt
+      // và chỉ được xóa sau khi được phê duyệt
     }
   };
 
